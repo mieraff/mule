@@ -6,27 +6,28 @@
  */
 package org.mule.runtime.module.extension.internal.runtime.resolver;
 
-import static org.mule.runtime.extension.api.runtime.source.SourceResult.invocationError;
-import static org.mule.runtime.extension.api.runtime.source.SourceResult.responseError;
-import static org.mule.runtime.extension.api.runtime.source.SourceResult.success;
+import static org.mule.sdk.api.runtime.source.SourceResult.invocationError;
+import static org.mule.sdk.api.runtime.source.SourceResult.responseError;
+import static org.mule.sdk.api.runtime.source.SourceResult.success;
 
 import org.mule.runtime.api.message.Error;
 import org.mule.runtime.extension.api.runtime.operation.ExecutionContext;
-import org.mule.runtime.extension.api.runtime.source.SourceCallbackContext;
-import org.mule.runtime.extension.api.runtime.source.SourceResult;
+import org.mule.sdk.api.runtime.source.SourceCallbackContext;
+import org.mule.sdk.api.runtime.source.SourceResult;
+
 
 /**
- * {@link ArgumentResolver} implementation which create instances of {@link SourceResult}
+ * ADD JDOC {@link ArgumentResolver} implementation which create instances of {@link SourceResult}
  *
  * @since 4.0
  */
-public class SourceResultArgumentResolver extends AbstractSourceResultArgumentResolver<SourceResult> {
+public class SdkSourceResultArgumentResolver extends AbstractSourceResultArgumentResolver<SourceResult> {
 
-  private final ArgumentResolver<Error> errorArgumentResolver;
-  private final ArgumentResolver<SourceCallbackContext> callbackContextArgumentResolver;
+  private ArgumentResolver<Error> errorArgumentResolver;
+  private ArgumentResolver<SourceCallbackContext> callbackContextArgumentResolver;
 
-  public SourceResultArgumentResolver(ArgumentResolver<Error> errorArgumentResolver,
-                                      ArgumentResolver<SourceCallbackContext> callbackContextArgumentResolver) {
+  public SdkSourceResultArgumentResolver(ArgumentResolver<Error> errorArgumentResolver,
+                                         ArgumentResolver<SourceCallbackContext> callbackContextArgumentResolver) {
     super(errorArgumentResolver);
     this.errorArgumentResolver = errorArgumentResolver;
     this.callbackContextArgumentResolver = callbackContextArgumentResolver;

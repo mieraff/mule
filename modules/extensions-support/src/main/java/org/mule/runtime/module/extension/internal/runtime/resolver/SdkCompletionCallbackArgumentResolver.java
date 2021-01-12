@@ -14,8 +14,8 @@ import org.mule.runtime.module.extension.internal.runtime.execution.adapter.SdkC
 import org.mule.sdk.api.runtime.process.CompletionCallback;
 
 /**
- * ADD JDOC
- * {@link ArgumentResolver} which returns the {@link org.mule.runtime.module.extension.api.runtime.privileged.ExecutionContextProperties#COMPLETION_CALLBACK_CONTEXT_PARAM}
+ * ADD JDOC {@link ArgumentResolver} which returns the
+ * {@link org.mule.runtime.module.extension.api.runtime.privileged.ExecutionContextProperties#COMPLETION_CALLBACK_CONTEXT_PARAM}
  * context variable.
  * <p/>
  * Notice that this resolver only works if the {@link ExecutionContext} is a {@link ExecutionContextAdapter}

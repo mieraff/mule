@@ -3574,58 +3574,6 @@
                 {
                   "type": {
                     "format": "java",
-                    "type": "String",
-                    "annotations": {
-                      "typeId": "org.mule.sdk.api.tx.OperationTransactionalAction",
-                      "enum": {
-                        "type": "[Ljava.lang.String;",
-                        "values": [
-                          "ALWAYS_JOIN",
-                          "JOIN_IF_POSSIBLE",
-                          "NOT_SUPPORTED"
-                        ]
-                      },
-                      "classInformation": {
-                        "classname": "org.mule.sdk.api.tx.OperationTransactionalAction",
-                        "hasDefaultConstructor": false,
-                        "isInterface": false,
-                        "isInstantiable": false,
-                        "isAbstract": false,
-                        "isFinal": true,
-                        "implementedInterfaces": [],
-                        "parent": "java.lang.Enum",
-                        "genericTypes": [],
-                        "isMap": false
-                      }
-                    }
-                  },
-                  "hasDynamicType": false,
-                  "required": false,
-                  "isConfigOverride": false,
-                  "isComponentId": false,
-                  "expressionSupport": "NOT_SUPPORTED",
-                  "defaultValue": "JOIN_IF_POSSIBLE",
-                  "role": "BEHAVIOUR",
-                  "dslConfiguration": {
-                    "allowsInlineDefinition": false,
-                    "allowsReferences": false,
-                    "allowTopLevelDefinition": false
-                  },
-                  "layoutModel": {
-                    "password": false,
-                    "text": false,
-                    "query": false,
-                    "order": 1,
-                    "tabName": "Advanced"
-                  },
-                  "allowedStereotypeModels": [],
-                  "name": "transactionalAction",
-                  "description": "The type of joining action that operations can take regarding transactions.",
-                  "modelProperties": {}
-                },
-                {
-                  "type": {
-                    "format": "java",
                     "type": "Object",
                     "annotations": {
                       "typeId": "org.mule.runtime.extension.api.runtime.config.ConfigurationProvider",
@@ -3659,7 +3607,7 @@
                     "password": false,
                     "text": false,
                     "query": false,
-                    "order": 2
+                    "order": 5
                   },
                   "allowedStereotypeModels": [
                     {
@@ -3674,6 +3622,58 @@
                   "name": "config-ref",
                   "description": "The name of the configuration to be used to execute this component",
                   "modelProperties": {}
+                },
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "String",
+                    "annotations": {
+                      "typeId": "org.mule.runtime.extension.api.tx.OperationTransactionalAction",
+                      "enum": {
+                        "type": "[Ljava.lang.String;",
+                        "values": [
+                          "ALWAYS_JOIN",
+                          "JOIN_IF_POSSIBLE",
+                          "NOT_SUPPORTED"
+                        ]
+                      },
+                      "classInformation": {
+                        "classname": "org.mule.runtime.extension.api.tx.OperationTransactionalAction",
+                        "hasDefaultConstructor": false,
+                        "isInterface": false,
+                        "isInstantiable": false,
+                        "isAbstract": false,
+                        "isFinal": true,
+                        "implementedInterfaces": [],
+                        "parent": "java.lang.Enum",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    }
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "defaultValue": "JOIN_IF_POSSIBLE",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": false,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 6,
+                    "tabName": "Advanced"
+                  },
+                  "allowedStereotypeModels": [],
+                  "name": "transactionalAction",
+                  "description": "The type of joining action that operations can take regarding transactions.",
+                  "modelProperties": {}
                 }
               ],
               "exclusiveParametersModels": [],
@@ -3681,7 +3681,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 1
+                "order": 0
               },
               "showInDsl": false,
               "name": "General",
@@ -3710,7 +3710,7 @@
                     "password": false,
                     "text": false,
                     "query": false,
-                    "order": 3,
+                    "order": 1,
                     "tabName": "Advanced"
                   },
                   "allowedStereotypeModels": [],
@@ -3742,7 +3742,7 @@
                     "password": false,
                     "text": false,
                     "query": false,
-                    "order": 4,
+                    "order": 2,
                     "tabName": "Advanced"
                   },
                   "allowedStereotypeModels": [],
@@ -3759,7 +3759,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 2
+                "order": 1
               },
               "showInDsl": false,
               "name": "Output",
@@ -3858,7 +3858,7 @@
                     "password": false,
                     "text": false,
                     "query": false,
-                    "order": 5,
+                    "order": 3,
                     "tabName": "Error Mapping"
                   },
                   "allowedStereotypeModels": [],
@@ -3886,7 +3886,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 3
+                "order": 2
               },
               "showInDsl": false,
               "name": "Error Mappings",
@@ -4047,7 +4047,7 @@
                     "password": false,
                     "text": false,
                     "query": false,
-                    "order": 6,
+                    "order": 4,
                     "tabName": "Advanced"
                   },
                   "allowedStereotypeModels": [],
@@ -4072,7 +4072,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 4
+                "order": 3
               },
               "showInDsl": false,
               "name": "Connection",

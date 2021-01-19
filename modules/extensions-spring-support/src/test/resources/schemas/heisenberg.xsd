@@ -2437,6 +2437,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:element xmlns="http://www.mulesoft.org/schema/mule/heisenberg" type="FutureSdkImplicitHandlingType" substitutionGroup="heisenberg-empire" name="future-sdk-implicit-handling"></xs:element>
+  <xs:complexType name="FutureSdkImplicitHandlingType">
+    <xs:complexContent>
+      <xs:extension xmlns:mule="http://www.mulesoft.org/schema/mule/core" base="mule:abstractOperatorType">
+        <xs:sequence minOccurs="0" maxOccurs="1"></xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:element xmlns="http://www.mulesoft.org/schema/mule/heisenberg" xmlns:mule="http://www.mulesoft.org/schema/mule/core" type="GetChainType" substitutionGroup="mule:abstract-operator" name="get-chain"></xs:element>
   <xs:complexType name="GetChainType">
     <xs:complexContent>

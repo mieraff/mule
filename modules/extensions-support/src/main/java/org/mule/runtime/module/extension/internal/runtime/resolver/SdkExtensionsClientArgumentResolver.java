@@ -11,7 +11,10 @@ import org.mule.runtime.module.extension.internal.runtime.client.adapter.SdkExte
 import org.mule.sdk.api.client.ExtensionsClient;
 
 /**
- * ADD JDOC
+ * {@link ArgumentResolver} which resolves to a {@link ExtensionsClient} by delegating into a
+ * {@link ExtensionsClientArgumentResolver} and adapting the result.
+ *
+ * @since 4.4.0
  */
 public class SdkExtensionsClientArgumentResolver implements ArgumentResolver<ExtensionsClient> {
 

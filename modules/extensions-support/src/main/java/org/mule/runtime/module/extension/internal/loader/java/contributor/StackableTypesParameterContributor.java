@@ -144,7 +144,6 @@ public class StackableTypesParameterContributor implements ParameterDeclarerCont
                                                                                                                      expectedType))
             .setStaticResolverFactory((value) -> new StaticLiteralValueResolver(value.toString(), value.getClass()))
             .build())
-        // MAKE STACKABLE TYPES SUPPORT MULTIPLE TYPES
         .addType(StackableType
             .builder(org.mule.sdk.api.runtime.parameter.ParameterResolver.class)
             .setStaticResolverFactory(value -> new StaticValueResolver<>(new StaticParameterResolver<>(value)))

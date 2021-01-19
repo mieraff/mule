@@ -11,7 +11,10 @@ import org.mule.runtime.module.extension.internal.runtime.operation.adapter.SdkF
 import org.mule.sdk.api.runtime.operation.FlowListener;
 
 /**
- * ADD JDOC
+ * {@link ArgumentResolver} which resolves to a {@link FlowListener} by delegating into a {@link FlowListenerArgumentResolver} and
+ * adapting the result.
+ *
+ * @since 4.4.0
  */
 public class SdkFlowListenerArgumentResolver implements ArgumentResolver<FlowListener> {
 

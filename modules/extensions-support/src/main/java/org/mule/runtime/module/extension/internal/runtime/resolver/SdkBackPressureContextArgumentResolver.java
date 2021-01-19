@@ -11,9 +11,10 @@ import org.mule.runtime.module.extension.internal.runtime.source.legacy.SdkBackP
 import org.mule.sdk.api.runtime.source.BackPressureContext;
 
 /**
- * ADD JDOC
+ * {@link ArgumentResolver} which resolves to a {@link BackPressureContext} by delegating into a
+ * {@link BackPressureContextArgumentResolver} and adapting the result.
  *
- * @since 1.1
+ * @since 4.4.0
  */
 public class SdkBackPressureContextArgumentResolver implements ArgumentResolver<BackPressureContext> {
 

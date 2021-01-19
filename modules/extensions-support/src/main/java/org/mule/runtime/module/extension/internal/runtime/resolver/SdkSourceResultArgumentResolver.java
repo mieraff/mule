@@ -17,9 +17,9 @@ import org.mule.sdk.api.runtime.source.SourceResult;
 
 
 /**
- * ADD JDOC {@link ArgumentResolver} implementation which create instances of {@link SourceResult}
+ * {@link ArgumentResolver} implementation which create instances of {@link SourceResult}
  *
- * @since 4.0
+ * @since 4.4.0
  */
 public class SdkSourceResultArgumentResolver extends AbstractSourceResultArgumentResolver<SourceResult> {
 

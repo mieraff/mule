@@ -159,8 +159,10 @@ public final class MethodArgumentResolverDelegate implements ArgumentResolverDel
       new SdkBackPressureContextArgumentResolver();
   private static final ArgumentResolver<ComponentLocation> COMPONENT_LOCATION_ARGUMENT_RESOLVER =
       new ComponentLocationArgumentResolver();
-  private static final ArgumentResolver<Object> OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER =
+  private static final ArgumentResolver<OperationTransactionalAction> LEGACY_OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER =
       new OperationTransactionalActionArgumentResolver();
+  private static final ArgumentResolver<org.mule.sdk.api.tx.OperationTransactionalAction> OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER =
+      new SdkOperationTransactionalActionArgumentResolver();
   private static final ArgumentResolver<CorrelationInfo> CORRELATION_INFO_ARGUMENT_RESOLVER =
       new CorrelationInfoArgumentResolver();
   private static final ArgumentResolver<NotificationEmitter> LEGACY_NOTIFICATION_HANDLER_ARGUMENT_RESOLVER =
@@ -288,8 +290,9 @@ public final class MethodArgumentResolverDelegate implements ArgumentResolverDel
         argumentResolver = ASYNC_SOURCE_COMPLETION_CALLBACK_ARGUMENT_RESOLVER;
       } else if (ComponentLocation.class.equals(parameterType)) {
         argumentResolver = COMPONENT_LOCATION_ARGUMENT_RESOLVER;
-      } else if (OperationTransactionalAction.class.equals(parameterType)
-          || org.mule.sdk.api.tx.OperationTransactionalAction.class.equals(parameterType)) {
+      } else if (OperationTransactionalAction.class.equals(parameterType)) {
+        argumentResolver = LEGACY_OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER;
+      } else if (org.mule.sdk.api.tx.OperationTransactionalAction.class.equals(parameterType)) {
         argumentResolver = OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER;
       } else if (CorrelationInfo.class.equals(parameterType)
           || org.mule.sdk.api.runtime.parameter.CorrelationInfo.class.equals(parameterType)) {

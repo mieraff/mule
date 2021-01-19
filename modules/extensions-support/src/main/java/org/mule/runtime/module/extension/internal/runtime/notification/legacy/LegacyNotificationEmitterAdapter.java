@@ -14,7 +14,7 @@ import org.mule.runtime.extension.api.notification.NotificationActionDefinition;
 import org.mule.runtime.extension.api.notification.NotificationEmitter;
 
 /**
- * ADD JDOC
+ * Adapts a {@link org.mule.sdk.api.notification.NotificationEmitter} into a legacy {@link NotificationEmitter}
  */
 public class LegacyNotificationEmitterAdapter implements NotificationEmitter {
 

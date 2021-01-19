@@ -12,7 +12,9 @@ import org.mule.runtime.module.extension.internal.runtime.notification.DefaultNo
 import org.mule.sdk.api.notification.NotificationEmitter;
 
 /**
- * ADD JDOC
+ * {@link ArgumentResolver} implementation for {@link NotificationEmitter} parameters.
+ *
+ * @since 4.4.0
  */
 public class SdkNotificationHandlerArgumentResolver implements ArgumentResolver<NotificationEmitter> {
 

@@ -11,6 +11,12 @@ import static org.mule.runtime.module.extension.internal.runtime.source.legacy.L
 import org.mule.sdk.api.runtime.operation.Result;
 import org.mule.sdk.api.runtime.process.RouterCompletionCallback;
 
+/**
+ * Adapts a legacy {@link org.mule.runtime.extension.api.runtime.process.RouterCompletionCallback} into a
+ * {@link RouterCompletionCallback}
+ *
+ * @since 4.4.0
+ */
 public class SdkRouterCompletionCallback implements RouterCompletionCallback {
 
   private org.mule.runtime.extension.api.runtime.process.RouterCompletionCallback delegate;

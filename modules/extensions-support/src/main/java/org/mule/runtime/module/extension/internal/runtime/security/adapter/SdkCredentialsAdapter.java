@@ -8,6 +8,11 @@ package org.mule.runtime.module.extension.internal.runtime.security.adapter;
 
 import org.mule.sdk.api.security.Credentials;
 
+/**
+ *
+ *
+ * @since 4.4.0
+ */
 public class SdkCredentialsAdapter implements Credentials {
 
   private final org.mule.runtime.api.security.Credentials delegate;

@@ -18,7 +18,9 @@ import org.mule.runtime.extension.api.runtime.operation.ExecutionContext;
 import java.util.Set;
 
 /**
- * ADD JDOC
+ * Abstract {@link ArgumentResolver} which holds the logic to resolve Source Results.
+ *
+ * @since 4.4.0
  */
 public abstract class AbstractSourceResultArgumentResolver<T> implements ArgumentResolver<T> {
 

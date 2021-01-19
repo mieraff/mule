@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * ADD JDOC
+ * Adapts a legacy {@link org.mule.runtime.extension.api.security.AuthenticationHandler} into a {@link AuthenticationHandler}
+ *
+ * @since 4.4.0
  */
 public class SdkAuthenticationHandlerAdapter implements AuthenticationHandler {
 

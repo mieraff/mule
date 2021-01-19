@@ -11,7 +11,9 @@ import org.mule.sdk.api.security.Credentials;
 import org.mule.sdk.api.security.CredentialsBuilder;
 
 /**
- * ADD JDOC
+ * Adapts a {@link org.mule.runtime.api.security.CredentialsBuilder} into a {@link CredentialsBuilder}
+ *
+ * @since 4.4.0
  */
 public class SdkCredentialsBuilderAdapter implements CredentialsBuilder {
 

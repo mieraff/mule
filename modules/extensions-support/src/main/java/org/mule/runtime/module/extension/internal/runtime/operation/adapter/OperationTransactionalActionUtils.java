@@ -11,17 +11,20 @@ import static java.lang.String.format;
 import org.mule.runtime.extension.api.tx.OperationTransactionalAction;
 
 /**
- * ADD JDOC
+ * Utils class for handling {@link OperationTransactionalAction}
+ *
+ * @since 4.4.0
  */
 public final class OperationTransactionalActionUtils {
 
   private OperationTransactionalActionUtils() {}
 
   /**
-   * ADD JDOC
-   * 
-   * @param operationTransactionalAction
-   * @return
+   * Returns the assosiated {@link OperationTransactionalAction} from the given value. The given value must either be an
+   * {@link OperationTransactionalAction} or an {@link org.mule.sdk.api.tx.OperationTransactionalAction}
+   *
+   * @param operationTransactionalAction the value to take the {@link OperationTransactionalAction}
+   * @return the {@link OperationTransactionalAction} associated to the given argument.
    */
   public static OperationTransactionalAction from(Object operationTransactionalAction) {
     if (operationTransactionalAction instanceof OperationTransactionalAction) {

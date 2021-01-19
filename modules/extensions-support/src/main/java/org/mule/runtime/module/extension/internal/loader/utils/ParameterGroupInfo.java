@@ -7,7 +7,9 @@
 package org.mule.runtime.module.extension.internal.loader.utils;
 
 /**
- * ADD JDOC
+ * Class that models the information of a parameter group annotation
+ *
+ * @since 4.4.0
  */
 public class ParameterGroupInfo {
 

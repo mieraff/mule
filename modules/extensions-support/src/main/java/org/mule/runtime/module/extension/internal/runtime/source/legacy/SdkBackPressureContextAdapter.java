@@ -14,7 +14,9 @@ import org.mule.sdk.api.runtime.source.BackPressureContext;
 import org.mule.sdk.api.runtime.source.SourceCallbackContext;
 
 /**
- * ADD JDOC
+ * Adapts a legacy {@link org.mule.runtime.extension.api.runtime.source.BackPressureContext} into a {@link BackPressureContext}
+ *
+ * @since 4.4.0
  */
 public class SdkBackPressureContextAdapter implements BackPressureContext {
 

@@ -8,6 +8,12 @@ package org.mule.runtime.module.extension.internal.runtime.execution.adapter;
 
 import org.mule.sdk.api.runtime.process.VoidCompletionCallback;
 
+/**
+ * Adapts a legacy {@link org.mule.runtime.extension.api.runtime.process.VoidCompletionCallback} into a
+ * {@link VoidCompletionCallback}
+ *
+ * @since 4.4.0
+ */
 public class SdkVoidCompletionCallbackAdapter implements VoidCompletionCallback {
 
   private org.mule.runtime.extension.api.runtime.process.VoidCompletionCallback delegate;

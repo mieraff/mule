@@ -11,6 +11,11 @@ import org.mule.runtime.extension.api.client.OperationParameters;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Adapts a {@link org.mule.sdk.api.client.OperationParameters} into a legacy {@link OperationParameters}
+ *
+ * @since 4.4.0
+ */
 public class LegacyOperationParametersAdapter implements OperationParameters {
 
   private final org.mule.sdk.api.client.OperationParameters delegate;

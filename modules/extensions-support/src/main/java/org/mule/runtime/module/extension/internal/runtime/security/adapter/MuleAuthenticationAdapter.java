@@ -11,7 +11,9 @@ import org.mule.runtime.api.security.Authentication;
 import java.util.Map;
 
 /**
- * ADD JDOC
+ * Adapts a {@link org.mule.sdk.api.security.Authentication} into a {@link Authentication}
+ *
+ * @since 4.4.0
  */
 public class MuleAuthenticationAdapter implements Authentication {
 

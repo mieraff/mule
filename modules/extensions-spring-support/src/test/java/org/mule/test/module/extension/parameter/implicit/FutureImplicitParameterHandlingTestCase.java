@@ -9,7 +9,6 @@ package org.mule.test.module.extension.parameter.implicit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.mule.test.heisenberg.extension.HeisenbergOperations.secretFutureFeature;
 import static org.mule.test.heisenberg.extension.HeisenbergOperations.secretSdkFutureFeature;
 
 import org.mule.test.module.extension.AbstractExtensionFunctionalTestCase;
@@ -27,11 +26,5 @@ public class FutureImplicitParameterHandlingTestCase extends AbstractExtensionFu
   public void sdkFutureImplicitHandling() throws Exception {
     flowRunner("futureSdkImplicitHandling");
     assertThat(secretSdkFutureFeature, is(nullValue()));
-  }
-
-  @Test
-  public void muleFutureImplicitHandling() throws Exception {
-    flowRunner("futureRuntimeImplicitHandling");
-    assertThat(secretFutureFeature, is(nullValue()));
   }
 }

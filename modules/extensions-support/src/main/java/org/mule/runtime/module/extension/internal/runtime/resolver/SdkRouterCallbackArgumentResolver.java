@@ -11,7 +11,9 @@ import org.mule.runtime.module.extension.internal.runtime.execution.adapter.SdkR
 import org.mule.sdk.api.runtime.process.RouterCompletionCallback;
 
 /**
- * ADD JDOC
+ * {@link ArgumentResolver} which returns a {@link RouterCompletionCallback}
+ *
+ * @since 4.4.0
  */
 public final class SdkRouterCallbackArgumentResolver implements ArgumentResolver<RouterCompletionCallback> {
 

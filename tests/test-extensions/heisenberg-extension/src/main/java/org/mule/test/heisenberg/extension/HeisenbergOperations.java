@@ -22,7 +22,6 @@ import static org.mule.test.heisenberg.extension.HeisenbergNotificationAction.KN
 
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.exception.MuleException;
-import org.mule.runtime.api.future.SecretFutureFeature;
 import org.mule.runtime.api.lifecycle.Disposable;
 import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.api.metadata.TypedValue;
@@ -107,7 +106,6 @@ import com.google.common.collect.ImmutableMap;
 public class HeisenbergOperations implements Disposable {
 
   public static SecretSdkFutureFeature secretSdkFutureFeature = null;
-  public static SecretFutureFeature secretFutureFeature = null;
 
   public static final String CURE_CANCER_MESSAGE = "Can't help you, you are going to die";
   public static final String CALL_GUS_MESSAGE = "You are not allowed to speak with gus.";
@@ -670,10 +668,6 @@ public class HeisenbergOperations implements Disposable {
 
   public void futureSdkImplicitHandling(SecretSdkFutureFeature secretSdkFutureFeature) {
     HeisenbergOperations.secretSdkFutureFeature = secretSdkFutureFeature;
-  }
-
-  public void futureRuntimeImplicitHandling(SecretFutureFeature secretFutureFeature) {
-    HeisenbergOperations.secretFutureFeature = secretFutureFeature;
   }
 
 }

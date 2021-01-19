@@ -11,7 +11,10 @@ import org.mule.runtime.module.extension.internal.runtime.security.adapter.SdkAu
 import org.mule.sdk.api.security.AuthenticationHandler;
 
 /**
- * ADD JDOC
+ * {@link ArgumentResolver} which resolves to a {@link AuthenticationHandler} by delegating into a
+ * {@link SecurityContextHandlerArgumentResolver} and adapting the result.
+ *
+ * @since 4.4.0
  */
 public final class SdkSecurityContextHandlerArgumentResolver implements ArgumentResolver<AuthenticationHandler> {
 

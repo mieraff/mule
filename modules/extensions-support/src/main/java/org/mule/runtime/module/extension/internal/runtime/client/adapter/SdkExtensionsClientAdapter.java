@@ -16,6 +16,11 @@ import org.mule.sdk.api.runtime.operation.Result;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Adapts a legacy {@link org.mule.runtime.extension.api.client.ExtensionsClient} into a {@link ExtensionsClient}
+ *
+ * @since 4.4.0
+ */
 public class SdkExtensionsClientAdapter implements ExtensionsClient {
 
   private final org.mule.runtime.extension.api.client.ExtensionsClient delegate;

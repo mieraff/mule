@@ -11,6 +11,11 @@ import org.mule.sdk.api.runtime.operation.FlowListener;
 
 import java.util.function.Consumer;
 
+/**
+ * Adapts a legacy {@link org.mule.runtime.extension.api.runtime.operation.FlowListener} into a {@link FlowListener}
+ *
+ * @since 4.4.0
+ */
 public class SdkFlowListenerAdapter implements FlowListener {
 
   private final org.mule.runtime.extension.api.runtime.operation.FlowListener delegate;

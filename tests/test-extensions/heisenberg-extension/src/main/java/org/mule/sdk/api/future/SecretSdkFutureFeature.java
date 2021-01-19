@@ -6,6 +6,8 @@
  */
 package org.mule.sdk.api.future;
 
+import org.mule.sdk.api.annotation.MinMuleVersion;
+
 public interface SecretSdkFutureFeature {
 
   void doMagic();

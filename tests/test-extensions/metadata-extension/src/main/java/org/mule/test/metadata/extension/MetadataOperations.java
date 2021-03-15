@@ -214,6 +214,7 @@ public class MetadataOperations {
   }
 
   @OutputResolver(output = TestOutputResolverWithoutKeyResolver.class)
+  @MediaType(value = ANY, strict = false)
   public Result<Object, StringAttributes> messageAttributesPersonTypeMetadata(@MetadataKeyId String type) {
     return null;
   }
@@ -229,6 +230,7 @@ public class MetadataOperations {
 
   @OutputResolver(output = TestOutputAttributesResolverWithKeyResolver.class,
       attributes = TestOutputAttributesResolverWithKeyResolver.class)
+  @MediaType(value = ANY, strict = false)
   public Result<Object, AbstractOutputAttributes> outputAttributesWithDynamicMetadata(
                                                                                       @MetadataKeyId(TestOutputAttributesResolverWithKeyResolver.class) String type) {
     return null;

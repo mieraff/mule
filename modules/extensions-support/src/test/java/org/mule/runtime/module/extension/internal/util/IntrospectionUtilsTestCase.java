@@ -407,7 +407,7 @@ public class IntrospectionUtilsTestCase extends AbstractMuleTestCase {
   public void listWithNoGenerics() throws Exception {
     MetadataType returnType = IntrospectionUtils.getMethodReturnType(getMethod("listNoGenerics"));
     assertThat(returnType, instanceOf(ArrayType.class));
-    assertThat(((ArrayType) returnType).getType(), instanceOf(ObjectType.class));
+    assertThat(((ArrayType) returnType).getType(), instanceOf(AnyType.class));
   }
 
   @Test
@@ -606,7 +606,7 @@ public class IntrospectionUtilsTestCase extends AbstractMuleTestCase {
 
   private void assertAttributesType(String method) throws Exception {
     MetadataType attributesType = IntrospectionUtils.getMethodReturnAttributesType(getMethod(method));
-    assertThat(attributesType, is(instanceOf(ObjectType.class)));
+    assertThat(attributesType, is(instanceOf(AnyType.class)));
     assertType(attributesType, Object.class);
   }
 
@@ -634,7 +634,7 @@ public class IntrospectionUtilsTestCase extends AbstractMuleTestCase {
     MetadataType returnType = IntrospectionUtils.getMethodReturnType(getMethod(method));
 
     assertThat(returnType, is(instanceOf(ArrayType.class)));
-    assertMessageType(((ArrayType) returnType).getType(), is(instanceOf(StringType.class)), is(instanceOf(ObjectType.class)));
+    assertMessageType(((ArrayType) returnType).getType(), is(instanceOf(StringType.class)), is(instanceOf(AnyType.class)));
   }
 
   public static class ThirdLevelSource extends SecondLevelSource<Integer> {

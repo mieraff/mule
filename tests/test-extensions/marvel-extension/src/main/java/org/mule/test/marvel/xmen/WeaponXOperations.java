@@ -10,6 +10,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.mule.runtime.api.util.IOUtils.toByteArray;
+import static org.mule.runtime.extension.api.annotation.param.MediaType.ANY;
 
 import org.mule.metadata.api.builder.BaseTypeBuilder;
 import org.mule.metadata.api.model.AnyType;
@@ -20,6 +21,7 @@ import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.api.metadata.resolving.OutputTypeResolver;
 import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
 import org.mule.runtime.extension.api.annotation.param.Content;
+import org.mule.runtime.extension.api.annotation.param.MediaType;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
 import org.mule.runtime.extension.api.runtime.operation.Result;
@@ -93,6 +95,7 @@ public class WeaponXOperations {
    * @return
    */
   @OutputResolver(output = PassthroughMetadataResolver.class)
+  @MediaType(value = ANY, strict = false)
   public Result<Object, Void> woundsPassthrough(@Content(primary = true) TypedValue<Object> wounds) {
     Result.Builder<Object, Void> builder = Result.<Object, Void>builder()
         .output(wounds.getValue())

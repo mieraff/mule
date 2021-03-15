@@ -24,6 +24,7 @@ import static org.mule.runtime.module.extension.internal.loader.utils.ModelLoade
 import static org.mule.runtime.module.extension.internal.util.MuleExtensionUtils.getMetadataResolverFactory;
 import static org.mule.runtime.module.extension.internal.util.MuleExtensionUtils.isCompileTime;
 
+import org.mule.metadata.api.model.AnyType;
 import org.mule.metadata.api.model.ArrayType;
 import org.mule.metadata.api.model.MetadataType;
 import org.mule.metadata.api.model.ObjectType;
@@ -230,6 +231,13 @@ public class MetadataComponentModelValidator implements ExtensionModelValidator 
         if (!isCustomStaticType(objectType)) {
           objectType.getOpenRestriction().ifPresent(t -> checkValidType(component, extensionModel, t, problemsReporter));
           checkValidType(component, extensionModel, objectType, problemsReporter);
+        }
+      }
+
+      @Override
+      public void visitAnyType(AnyType anyType) {
+        if (!isCustomStaticType(anyType)) {
+          checkValidType(component, extensionModel, anyType, problemsReporter);
         }
       }
 

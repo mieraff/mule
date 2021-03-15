@@ -1150,7 +1150,7 @@
             }
           },
           "item": {
-            "type": "Object",
+            "type": "Any",
             "annotations": {
               "typeId": "java.lang.Object",
               "classInformation": {
@@ -1168,8 +1168,7 @@
               "typeAlias": {
                 "value": "Object"
               }
-            },
-            "fields": []
+            }
           }
         },
         "hasDynamicType": true,
@@ -1336,7 +1335,7 @@
                   }
                 },
                 "open": {
-                  "type": "Object",
+                  "type": "Any",
                   "annotations": {
                     "typeId": "java.lang.Object",
                     "classInformation": {
@@ -1354,8 +1353,7 @@
                     "typeAlias": {
                       "value": "Object"
                     }
-                  },
-                  "fields": []
+                  }
                 },
                 "fields": []
               },
@@ -1403,7 +1401,7 @@
                   }
                 },
                 "open": {
-                  "type": "Object",
+                  "type": "Any",
                   "annotations": {
                     "typeId": "java.lang.Object",
                     "classInformation": {
@@ -1421,8 +1419,7 @@
                     "typeAlias": {
                       "value": "Object"
                     }
-                  },
-                  "fields": []
+                  }
                 },
                 "fields": []
               },
@@ -1447,6 +1444,70 @@
               "name": "mapOfComplexTypedValues",
               "description": "",
               "modelProperties": {}
+            },
+            {
+              "type": {
+                "format": "java",
+                "type": "String"
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "expressionSupport": "SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 9,
+                "tabName": "Advanced"
+              },
+              "allowedStereotypeModels": [],
+              "name": "outputMimeType",
+              "description": "The mime type of the payload that this operation outputs.",
+              "modelProperties": {
+                "sinceMuleVersion": {
+                  "version": "4.2.0"
+                }
+              }
+            },
+            {
+              "type": {
+                "format": "java",
+                "type": "String"
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "expressionSupport": "SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 10,
+                "tabName": "Advanced"
+              },
+              "allowedStereotypeModels": [],
+              "name": "outputEncoding",
+              "description": "The encoding of the payload that this operation outputs.",
+              "modelProperties": {
+                "sinceMuleVersion": {
+                  "version": "4.2.0"
+                }
+              }
             }
           ],
           "exclusiveParametersModels": [],
@@ -1552,7 +1613,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 9,
+                "order": 11,
                 "tabName": "Advanced"
               },
               "allowedStereotypeModels": [],
@@ -1584,7 +1645,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 10,
+                "order": 12,
                 "tabName": "Advanced"
               },
               "allowedStereotypeModels": [],
@@ -1700,7 +1761,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 11,
+                "order": 13,
                 "tabName": "Error Mapping"
               },
               "allowedStereotypeModels": [],
@@ -2276,8 +2337,14 @@
       "executionType": "CPU_LITE",
       "output": {
         "type": {
-          "format": "java",
-          "type": "Object",
+          "format": {
+            "id": "*/*",
+            "label": "*/*",
+            "validMimeTypes": [
+              "*/*"
+            ]
+          },
+          "type": "Any",
           "annotations": {
             "typeId": "java.lang.Object",
             "classInformation": {
@@ -2295,8 +2362,7 @@
             "typeAlias": {
               "value": "Object"
             }
-          },
-          "fields": []
+          }
         },
         "hasDynamicType": true,
         "description": "",
@@ -2335,7 +2401,7 @@
             {
               "type": {
                 "format": "java",
-                "type": "Object",
+                "type": "Any",
                 "annotations": {
                   "typeId": "java.lang.Object",
                   "classInformation": {
@@ -2353,8 +2419,7 @@
                   "typeAlias": {
                     "value": "Object"
                   }
-                },
-                "fields": []
+                }
               },
               "hasDynamicType": false,
               "required": false,
@@ -2378,6 +2443,70 @@
               "name": "objectTypedValue",
               "description": "",
               "modelProperties": {}
+            },
+            {
+              "type": {
+                "format": "java",
+                "type": "String"
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "expressionSupport": "SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 2,
+                "tabName": "Advanced"
+              },
+              "allowedStereotypeModels": [],
+              "name": "outputMimeType",
+              "description": "The mime type of the payload that this operation outputs.",
+              "modelProperties": {
+                "sinceMuleVersion": {
+                  "version": "4.2.0"
+                }
+              }
+            },
+            {
+              "type": {
+                "format": "java",
+                "type": "String"
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "expressionSupport": "SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 3,
+                "tabName": "Advanced"
+              },
+              "allowedStereotypeModels": [],
+              "name": "outputEncoding",
+              "description": "The encoding of the payload that this operation outputs.",
+              "modelProperties": {
+                "sinceMuleVersion": {
+                  "version": "4.2.0"
+                }
+              }
             }
           ],
           "exclusiveParametersModels": [],
@@ -2414,7 +2543,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 2,
+                "order": 4,
                 "tabName": "Advanced"
               },
               "allowedStereotypeModels": [],
@@ -2446,7 +2575,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 3,
+                "order": 5,
                 "tabName": "Advanced"
               },
               "allowedStereotypeModels": [],
@@ -2562,7 +2691,7 @@
                 "password": false,
                 "text": false,
                 "query": false,
-                "order": 4,
+                "order": 6,
                 "tabName": "Error Mapping"
               },
               "allowedStereotypeModels": [],

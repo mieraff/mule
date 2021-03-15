@@ -7,6 +7,7 @@
 
 package org.mule.test.typed.value.extension.extension;
 
+import static org.mule.runtime.extension.api.annotation.param.MediaType.ANY;
 import static org.mule.runtime.extension.api.annotation.param.MediaType.TEXT_PLAIN;
 import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.extension.api.annotation.metadata.OutputResolver;
@@ -77,6 +78,7 @@ public class TypedValueParameterOperations {
   }
 
   @OutputResolver(output = NullOutputResolver.class)
+  @MediaType(value = ANY, strict = false)
   public TypedValue<Object> typedValueForObject(@Content TypedValue<Object> objectTypedValue) {
     return objectTypedValue;
   }

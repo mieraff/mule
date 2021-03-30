@@ -14,12 +14,14 @@ import static org.mule.runtime.api.metadata.resolving.FailureCode.COMPONENT_NOT_
 import static org.mule.runtime.api.value.ResolvingFailure.Builder.newFailure;
 import static org.mule.runtime.api.value.ValueResult.resultFrom;
 import static org.mule.runtime.core.api.util.ClassUtils.withContextClassLoader;
+import static org.mule.runtime.extension.api.values.ValueResolvingException.INVALID_VALUE_RESOLVER_NAME;
 import static org.mule.runtime.module.extension.internal.util.MuleExtensionUtils.getClassLoader;
 
 import org.mule.runtime.api.exception.MuleRuntimeException;
 import org.mule.runtime.api.meta.model.parameter.ParameterizedModel;
 import org.mule.runtime.api.meta.model.parameter.ValueProviderModel;
 import org.mule.runtime.api.value.ResolvingFailure;
+import org.mule.runtime.api.value.Value;
 import org.mule.runtime.api.value.ValueResult;
 import org.mule.runtime.app.declaration.api.ComponentElementDeclaration;
 import org.mule.runtime.app.declaration.api.ParameterizedElementDeclaration;
@@ -36,10 +38,10 @@ import org.mule.runtime.module.extension.internal.value.ValueProviderMediator;
 import org.mule.runtime.module.tooling.internal.artifact.AbstractParameterResolverExecutor;
 import org.mule.runtime.module.tooling.internal.artifact.ExecutorExceptionWrapper;
 import org.mule.runtime.module.tooling.internal.artifact.params.ExpressionNotSupportedException;
-import org.mule.runtime.module.tooling.internal.artifact.sampledata.SampleDataExecutor;
 import org.mule.runtime.module.tooling.internal.utils.ArtifactHelper;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -47,7 +49,7 @@ import org.slf4j.LoggerFactory;
 
 public class ValueProviderExecutor extends AbstractParameterResolverExecutor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SampleDataExecutor.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ValueProviderExecutor.class);
 
   private final ConnectionManager connectionManager;
 
@@ -61,11 +63,27 @@ public class ValueProviderExecutor extends AbstractParameterResolverExecutor {
   public ValueResult resolveValues(ParameterizedModel parameterizedModel,
                                    ParameterizedElementDeclaration parameterizedElementDeclaration, String providerName) {
     try {
+      return doResolverValues(parameterizedModel, parameterizedElementDeclaration, providerName,
+                              getValueProviderModel(parameterizedModel, providerName));
+    } catch (ValueResolvingException e) {
+      if (LOGGER.isWarnEnabled()) {
+        LOGGER.warn(format("Resolve value provider has FAILED with code: %s for component: %s", e.getFailureCode(),
+                           parameterizedModel.getName()),
+                    e);
+      }
+      return resultFrom(newFailure(e).withFailureCode(e.getFailureCode()).build());
+    }
+  }
+
+  protected ValueResult doResolverValues(ParameterizedModel parameterizedModel,
+                                         ParameterizedElementDeclaration parameterizedElementDeclaration, String providerName,
+                                         ValueProviderModel valueProviderModel) {
+    try {
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Resolve value provider: {} STARTED for component: {}", providerName, parameterizedModel.getName());
       }
       Optional<ConfigurationInstance> optionalConfigurationInstance =
-          getConfigurationInstance(parameterizedModel, parameterizedElementDeclaration, providerName);
+          getConfigurationInstance(parameterizedElementDeclaration, valueProviderModel);
 
       ParameterValueResolver parameterValueResolver = parameterValueResolver(parameterizedElementDeclaration, parameterizedModel);
       ValueProviderMediator valueProviderMediator = createValueProviderMediator(parameterizedModel);
@@ -78,13 +96,10 @@ public class ValueProviderExecutor extends AbstractParameterResolverExecutor {
           LOGGER.debug("Invoking connector's value provider: {} for component: {}", providerName,
                        parameterizedModel.getName());
         }
-        return resultFrom(withContextClassLoader(extensionClassLoader, () -> valueProviderMediator.getValues(providerName,
-                                                                                                             parameterValueResolver,
-                                                                                                             connectionSupplier(context),
-                                                                                                             configSupplier(context),
-                                                                                                             context
-                                                                                                                 .getConnectionProvider()
-                                                                                                                 .orElse(null)),
+        return resultFrom(withContextClassLoader(extensionClassLoader,
+                                                 () -> getValues(valueProviderModel, parameterValueResolver,
+                                                                 valueProviderMediator,
+                                                                 context),
                                                  ValueResolvingException.class,
                                                  e -> {
                                                    throw new ExecutorExceptionWrapper(e);
@@ -128,26 +143,33 @@ public class ValueProviderExecutor extends AbstractParameterResolverExecutor {
     }
   }
 
-  private Supplier<Object> connectionSupplier(ExtensionResolvingContext context) {
+  protected Set<Value> getValues(ValueProviderModel valueProviderModel, ParameterValueResolver parameterValueResolver,
+                                 ValueProviderMediator valueProviderMediator, ExtensionResolvingContext context)
+      throws ValueResolvingException {
+    return valueProviderMediator.getValues(valueProviderModel.getProviderName(),
+                                           parameterValueResolver,
+                                           connectionSupplier(context),
+                                           configSupplier(context),
+                                           context.getConnectionProvider().orElse(null));
+  }
+
+  protected Supplier<Object> connectionSupplier(ExtensionResolvingContext context) {
     return (CheckedSupplier<Object>) () -> context.getConnection().orElse(null);
   }
 
-  private Supplier<Object> configSupplier(ExtensionResolvingContext context) {
+  protected Supplier<Object> configSupplier(ExtensionResolvingContext context) {
     return (CheckedSupplier<Object>) () -> context.getConfig().orElse(null);
   }
 
-  private Optional<ConfigurationInstance> getConfigurationInstance(ParameterizedModel parameterizedModel,
-                                                                   ParameterizedElementDeclaration parameterizedElementDeclaration,
-                                                                   String providerName)
+  private Optional<ConfigurationInstance> getConfigurationInstance(ParameterizedElementDeclaration parameterizedElementDeclaration,
+                                                                   ValueProviderModel valueProviderModel)
       throws ValueResolvingException {
     Optional<String> optionalConfigRef = getConfigRef(parameterizedElementDeclaration);
     Optional<ConfigurationInstance> optionalConfigurationInstance =
         optionalConfigRef.flatMap(artifactHelper::getConfigurationInstance);
 
     if (optionalConfigRef.isPresent()) {
-      Optional<ValueProviderModel> valueProviderModelOptional = getValueProviderModel(parameterizedModel, providerName);
-      if (valueProviderModelOptional.isPresent() && valueProviderModelOptional.get().requiresConfiguration()
-          && !optionalConfigurationInstance.isPresent()) {
+      if (valueProviderModel.requiresConfiguration() && !optionalConfigurationInstance.isPresent()) {
         // Improves the error message when configuration is required and not present, as we do the resolve parameter with lazyInit
         // in order
         // to avoid getting an error when a required parameter from model is not defined for resolving the value provider.
@@ -160,11 +182,15 @@ public class ValueProviderExecutor extends AbstractParameterResolverExecutor {
     return optionalConfigurationInstance;
   }
 
-  private Optional<ValueProviderModel> getValueProviderModel(ParameterizedModel parameterizedModel, String providerName) {
+  private ValueProviderModel getValueProviderModel(ParameterizedModel parameterizedModel, String providerName)
+      throws ValueResolvingException {
     return parameterizedModel.getAllParameterModels().stream()
         .filter(parameterModel -> parameterModel.getValueProviderModel()
             .map(vpm -> vpm.getProviderName().equals(providerName)).orElse(false))
-        .findFirst().flatMap(parameterModel -> parameterModel.getValueProviderModel());
+        .findFirst().flatMap(parameterModel -> parameterModel.getValueProviderModel())
+        .orElseThrow(() -> new ValueResolvingException(format("Unable to find value provider model for parameter or parameter group with name '%s'.",
+                                                              providerName),
+                                                       INVALID_VALUE_RESOLVER_NAME));
   }
 
   private ValueProviderMediator createValueProviderMediator(ParameterizedModel parameterizedModel) {

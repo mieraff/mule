@@ -40,6 +40,7 @@ import org.mule.runtime.module.tooling.api.artifact.DeclarationSession;
 import org.mule.runtime.module.tooling.internal.artifact.metadata.MetadataComponentExecutor;
 import org.mule.runtime.module.tooling.internal.artifact.metadata.MetadataKeysExecutor;
 import org.mule.runtime.module.tooling.internal.artifact.sampledata.SampleDataExecutor;
+import org.mule.runtime.module.tooling.internal.artifact.value.FieldValueProviderExecutor;
 import org.mule.runtime.module.tooling.internal.artifact.value.ValueProviderExecutor;
 import org.mule.runtime.module.tooling.internal.utils.ArtifactHelper;
 
@@ -76,6 +77,7 @@ public class InternalDeclarationSession implements DeclarationSession {
 
   private final LazyValue<ArtifactHelper> artifactHelperLazyValue;
   private final LazyValue<ValueProviderExecutor> valueProviderExecutorLazyValue;
+  private final LazyValue<FieldValueProviderExecutor> fieldValueProviderExecutorLazyValue;
   private final LazyValue<MetadataKeysExecutor> metadataKeysExecutorLazyValue;
   private final LazyValue<MetadataComponentExecutor> metadataComponentExecutorLazyValue;
   private final LazyValue<SampleDataExecutor> sampleDataExecutorLazyValue;
@@ -87,6 +89,10 @@ public class InternalDeclarationSession implements DeclarationSession {
     this.valueProviderExecutorLazyValue =
         new LazyValue<>(() -> new ValueProviderExecutor(muleContext, connectionManager, expressionManager, reflectionCache,
                                                         artifactHelper()));
+    this.fieldValueProviderExecutorLazyValue =
+        new LazyValue<>(() -> new FieldValueProviderExecutor(muleContext, connectionManager, expressionManager, reflectionCache,
+                                                             artifactHelper()));
+
     this.metadataKeysExecutorLazyValue =
         new LazyValue<>(() -> new MetadataKeysExecutor(connectionManager, reflectionCache, expressionManager, artifactHelper()));
 
@@ -105,6 +111,10 @@ public class InternalDeclarationSession implements DeclarationSession {
 
   private ValueProviderExecutor valueProviderExecutor() {
     return valueProviderExecutorLazyValue.get();
+  }
+
+  private FieldValueProviderExecutor fieldValueProviderExecutor() {
+    return fieldValueProviderExecutorLazyValue.get();
   }
 
   private MetadataKeysExecutor metadataKeysExecutor() {
@@ -160,6 +170,29 @@ public class InternalDeclarationSession implements DeclarationSession {
     }
     return valueProviderExecutor().resolveValues(optionalParameterizedModel.get(), parameterizedElementDeclaration,
                                                  providerName);
+  }
+
+  @Override
+  public ValueResult getFieldValues(ParameterizedElementDeclaration parameterizedElementDeclaration, String providerName,
+                                    String targetPath) {
+    Optional<ExtensionModel> optionalExtensionModel = artifactHelper().findExtension(parameterizedElementDeclaration);
+    if (!optionalExtensionModel.isPresent()) {
+      return resultFrom(newFailure()
+          .withMessage(extensionNotFoundErrorMessage(parameterizedElementDeclaration.getDeclaringExtension()))
+          .withFailureCode(COMPONENT_NOT_FOUND.getName())
+          .build());
+    }
+
+    Optional<? extends ParameterizedModel> optionalParameterizedModel =
+        artifactHelper().findModel(optionalExtensionModel.get(), parameterizedElementDeclaration);
+    if (!optionalParameterizedModel.isPresent()) {
+      return resultFrom(newFailure()
+          .withMessage(couldNotFindComponentErrorMessage(parameterizedElementDeclaration))
+          .withFailureCode(COMPONENT_NOT_FOUND.getName())
+          .build());
+    }
+    return fieldValueProviderExecutor().resolveValues(optionalParameterizedModel.get(), parameterizedElementDeclaration,
+                                                      providerName, targetPath);
   }
 
   @Override

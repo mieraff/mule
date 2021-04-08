@@ -120,7 +120,7 @@ public class MuleApplicationPolicyProvider implements ApplicationPolicyProvider,
   }
 
   @Override
-  public void updatePolicy(PolicyTemplateDescriptor policyTemplateDescriptor, PolicyParametrization parametrization)
+  public void updatePolicyOrder(PolicyTemplateDescriptor policyTemplateDescriptor, PolicyParametrization parametrization)
       throws PolicyRegistrationException {
 
     Optional<RegisteredPolicyInstanceProvider> instanceProvider = registeredPolicyInstanceProviders.stream()
@@ -131,8 +131,12 @@ public class MuleApplicationPolicyProvider implements ApplicationPolicyProvider,
       instanceProvider.get().applicationPolicyInstance.updateOrder(parametrization.getOrder());
       registeredPolicyInstanceProviders.sort(null); // todo from L118 to here it's only to fix the ordering stuff.
       policiesChangedCallback.run();
-      return;
     }
+  }
+
+  @Override
+  public void updatePolicy(PolicyTemplateDescriptor policyTemplateDescriptor, PolicyParametrization parametrization)
+      throws PolicyRegistrationException {
 
     // todo this should be a precondition check.
     // if (registeredPolicyInstanceProviders.stream().anyMatch(isPolicy(parametrization))) {

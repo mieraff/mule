@@ -8,7 +8,6 @@
 package org.mule.runtime.module.deployment.internal;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -16,16 +15,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mule.runtime.api.deployment.meta.Product.MULE;
-import static org.mule.runtime.deployment.model.api.artifact.ArtifactDescriptorConstants.MULE_LOADER_ID;
-import static org.mule.runtime.module.deployment.impl.internal.policy.PropertiesBundleDescriptorLoader.PROPERTIES_BUNDLE_DESCRIPTOR_LOADER_ID;
 import static org.mule.runtime.module.deployment.internal.DeploymentDirectoryWatcher.CHANGE_CHECK_INTERVAL_PROPERTY;
-import static org.mule.runtime.module.extension.api.loader.java.DefaultJavaExtensionModelLoader.JAVA_LOADER_ID;
 
-import org.mule.runtime.api.deployment.meta.MuleArtifactLoaderDescriptor;
-import org.mule.runtime.api.deployment.meta.MuleArtifactLoaderDescriptorBuilder;
-import org.mule.runtime.api.deployment.meta.MulePluginModel;
-import org.mule.runtime.api.deployment.meta.MulePolicyModel;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.exception.MuleRuntimeException;
 import org.mule.runtime.core.api.policy.PolicyParametrization;
@@ -33,21 +24,16 @@ import org.mule.runtime.deployment.model.api.application.Application;
 import org.mule.runtime.module.artifact.api.classloader.ArtifactClassLoader;
 import org.mule.runtime.module.deployment.api.DeploymentListener;
 import org.mule.runtime.module.deployment.impl.internal.builder.ApplicationFileBuilder;
-import org.mule.runtime.module.deployment.impl.internal.builder.ArtifactPluginFileBuilder;
-import org.mule.runtime.module.deployment.impl.internal.builder.JarFileBuilder;
-import org.mule.runtime.module.deployment.impl.internal.builder.PolicyFileBuilder;
 import org.mule.tck.junit4.rule.SystemProperty;
 import org.mule.tck.probe.JUnitLambdaProbe;
 import org.mule.tck.probe.PollingProber;
 import org.mule.tck.report.HeapDumper;
-import org.mule.tck.util.CompilerUtils;
 
 import java.io.File;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,11 +45,9 @@ public abstract class ClassLoaderLeakTestCase extends AbstractDeploymentTestCase
   @Rule
   public SystemProperty directoryWatcherChangeCheckInterval = new SystemProperty(CHANGE_CHECK_INTERVAL_PROPERTY, "5");
 
-  private static File simpleExtensionJarFile;
-
   private static final String POLICY_PROPERTY_VALUE = "policyPropertyValue";
   private static final String POLICY_PROPERTY_KEY = "policyPropertyKey";
-  private static final String FOO_POLICY_NAME = "fooPolicy";
+  public static final String FOO_POLICY_NAME = "fooPolicy";
 
   private static final int PROBER_POLLING_INTERVAL = 100;
   private static final int PROBER_POLIING_TIMEOUT = 5000;
@@ -73,28 +57,6 @@ public abstract class ClassLoaderLeakTestCase extends AbstractDeploymentTestCase
   private final String xmlFile;
 
   private final boolean useEchoPluginInApp;
-
-  @BeforeClass
-  public static void compileTestClasses() throws Exception {
-    simpleExtensionJarFile =
-        new CompilerUtils.ExtensionCompiler().compiling(getResourceFile("/org/foo/simple/SimpleExtension.java"),
-                                                        getResourceFile("/org/foo/simple/SimpleOperation.java"))
-            .compile("mule-module-simple-4.0-SNAPSHOT.jar", "1.0.0");
-  }
-
-  // Policy artifact file builders
-  private final PolicyFileBuilder fooPolicyFileBuilder =
-      new PolicyFileBuilder(FOO_POLICY_NAME).describedBy(new MulePolicyModel.MulePolicyModelBuilder()
-          .setMinMuleVersion(MIN_MULE_VERSION)
-          .setName(FOO_POLICY_NAME)
-          .setRequiredProduct(MULE)
-          .withBundleDescriptorLoader(createBundleDescriptorLoader(FOO_POLICY_NAME,
-                                                                   MULE_POLICY_CLASSIFIER,
-                                                                   PROPERTIES_BUNDLE_DESCRIPTOR_LOADER_ID))
-          .withClassLoaderModelDescriptorLoader(
-                                                new MuleArtifactLoaderDescriptor(MULE_LOADER_ID, emptyMap()))
-          .build())
-          .dependingOn(createSingleExtensionPlugin());
 
   private TestDeploymentListener deploymentListener;
 
@@ -133,7 +95,7 @@ public abstract class ClassLoaderLeakTestCase extends AbstractDeploymentTestCase
   @Test
   @Issue("MULE-18480")
   public void undeploysApplicationWithPoliciesDoesNotLeakClassloader() throws Exception {
-    policyManager.registerPolicyTemplate(fooPolicyFileBuilder.getArtifactFile());
+    policyManager.registerPolicyTemplate(testArtifacts.createFooPolicyFileBuilder().getArtifactFile());
 
     ApplicationFileBuilder applicationFileBuilder = getApplicationFileBuilder();
 
@@ -143,7 +105,7 @@ public abstract class ClassLoaderLeakTestCase extends AbstractDeploymentTestCase
 
     assertThat(getDeploymentListener().isAppDeployed(), is(true));
 
-    policyManager.addPolicy(applicationFileBuilder.getId(), fooPolicyFileBuilder.getArtifactId(),
+    policyManager.addPolicy(applicationFileBuilder.getId(), testArtifacts.createFooPolicyFileBuilder().getArtifactId(),
                             new PolicyParametrization(FOO_POLICY_ID, pointparameters -> true, 1,
                                                       singletonMap(POLICY_PROPERTY_KEY, POLICY_PROPERTY_VALUE),
                                                       getResourceFile("/fooPolicy.xml"), emptyList()));
@@ -258,26 +220,11 @@ public abstract class ClassLoaderLeakTestCase extends AbstractDeploymentTestCase
   private ApplicationFileBuilder getApplicationFileBuilder() throws Exception {
     if (useEchoPluginInApp) {
       return createExtensionApplicationWithServices(xmlFile + ".xml",
-                                                    helloExtensionV1Plugin);
+                                                    testArtifacts.createHelloExtensionV1PluginFileBuilder());
     } else {
       return new ApplicationFileBuilder(xmlFile)
           .definedBy(xmlFile + ".xml");
     }
-  }
-
-  private ArtifactPluginFileBuilder createSingleExtensionPlugin() {
-    MulePluginModel.MulePluginModelBuilder mulePluginModelBuilder = new MulePluginModel.MulePluginModelBuilder()
-        .setMinMuleVersion(MIN_MULE_VERSION).setName("simpleExtensionPlugin").setRequiredProduct(MULE)
-        .withBundleDescriptorLoader(createBundleDescriptorLoader("simpleExtensionPlugin", MULE_EXTENSION_CLASSIFIER,
-                                                                 PROPERTIES_BUNDLE_DESCRIPTOR_LOADER_ID, "1.0.0"));
-    mulePluginModelBuilder.withClassLoaderModelDescriptorLoader(new MuleArtifactLoaderDescriptorBuilder().setId(MULE_LOADER_ID)
-        .build());
-    mulePluginModelBuilder.withExtensionModelDescriber().setId(JAVA_LOADER_ID)
-        .addProperty("type", "org.foo.simple.SimpleExtension")
-        .addProperty("version", "1.0.0");
-    return new ArtifactPluginFileBuilder("simpleExtensionPlugin")
-        .dependingOn(new JarFileBuilder("simpleExtension", simpleExtensionJarFile))
-        .describedBy(mulePluginModelBuilder.build());
   }
 
   @Override

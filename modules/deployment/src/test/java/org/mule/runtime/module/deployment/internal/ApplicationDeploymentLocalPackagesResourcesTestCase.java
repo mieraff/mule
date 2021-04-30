@@ -19,11 +19,12 @@ import org.mule.tck.util.CompilerUtils;
 import java.io.File;
 import java.util.List;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Issue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import io.qameta.allure.Description;
+import io.qameta.allure.Issue;
 
 @RunWith(Parameterized.class)
 public class ApplicationDeploymentLocalPackagesResourcesTestCase extends AbstractApplicationDeploymentTestCase {
@@ -37,7 +38,7 @@ public class ApplicationDeploymentLocalPackagesResourcesTestCase extends Abstrac
     });
   }
 
-  private String classloaderModelVersion;
+  private final String classloaderModelVersion;
 
   public ApplicationDeploymentLocalPackagesResourcesTestCase(boolean parallelDeployment, String classloaderModelVersion) {
     super(parallelDeployment);
@@ -50,14 +51,14 @@ public class ApplicationDeploymentLocalPackagesResourcesTestCase extends Abstrac
   public void deploysAppWithLocalPackageAndPlugin() throws Exception {
     ArtifactPluginFileBuilder loadsAppResourcePlugin = new ArtifactPluginFileBuilder("loadsAppResourcePlugin")
         .configuredWith(EXPORTED_CLASS_PACKAGES_PROPERTY, "org.foo")
-        .containingClass(loadsAppResourceCallbackClassFile, "org/foo/LoadsAppResourceCallback.class");
+        .containingClass(testArtifacts.createLoadsAppResourceCallbackClassFile(), "org/foo/LoadsAppResourceCallback.class");
 
     ApplicationFileBuilder nonExposingAppFileBuilder = appFileBuilder("non-exposing-app")
         .configuredWith(EXPORTED_PACKAGES, "org.bar")
         .configuredWith(EXPORTED_RESOURCES, "test-resource.txt")
         .definedBy("app-with-loads-app-resource-plugin-config.xml")
-        .containingClass(barUtils1ClassFile, "org/bar/BarUtils.class")
-        .containingClass(echoTestClassFile, "org/foo/EchoTest.class")
+        .containingClass(testArtifacts.createBarUtils1ClassFile(), "org/bar/BarUtils.class")
+        .containingClass(testArtifacts.createEchoTestClassFile(), "org/foo/EchoTest.class")
         .containingResource("test-resource.txt", "test-resource.txt")
         .containingResource("test-resource.txt", "test-resource-not-exported.txt")
         .dependingOn(loadsAppResourcePlugin);
@@ -79,9 +80,9 @@ public class ApplicationDeploymentLocalPackagesResourcesTestCase extends Abstrac
         .configuredWith(EXPORTED_PACKAGES, "org.bar")
         .configuredWith(EXPORTED_RESOURCES, "test-resource.txt")
         .definedBy("app-with-loads-app-resource-plugin-config.xml")
-        .containingClass(loadsAppResourceCallbackClassFile, "org/foo/LoadsAppResourceCallback.class")
-        .containingClass(barUtils1ClassFile, "org/bar/BarUtils.class")
-        .containingClass(echoTestClassFile, "org/foo/EchoTest.class")
+        .containingClass(testArtifacts.createLoadsAppResourceCallbackClassFile(), "org/foo/LoadsAppResourceCallback.class")
+        .containingClass(testArtifacts.createBarUtils1ClassFile(), "org/bar/BarUtils.class")
+        .containingClass(testArtifacts.createEchoTestClassFile(), "org/foo/EchoTest.class")
         .containingResource("test-resource.txt", "test-resource.txt")
         .containingResource("test-resource.txt", "test-resource-not-exported.txt");
 
@@ -115,8 +116,8 @@ public class ApplicationDeploymentLocalPackagesResourcesTestCase extends Abstrac
         .configuredWith(EXPORTED_PACKAGES, "org.bar")
         .configuredWith(EXPORTED_RESOURCES, "test-resource.txt")
         .definedBy("app-with-plugin-bootstrap.xml")
-        .containingClass(barUtils1ClassFile, "org/bar/BarUtils.class")
-        .containingClass(echoTestClassFile, "org/foo/EchoTest.class")
+        .containingClass(testArtifacts.createBarUtils1ClassFile(), "org/bar/BarUtils.class")
+        .containingClass(testArtifacts.createEchoTestClassFile(), "org/foo/EchoTest.class")
         .containingResource("test-resource.txt", "test-resource.txt")
         .containingResource("test-resource.txt", "test-resource-not-exported.txt")
         .dependingOn(loadsAppResourceInterceptorPlugin);
@@ -145,8 +146,8 @@ public class ApplicationDeploymentLocalPackagesResourcesTestCase extends Abstrac
         .definedBy("app-with-interceptor.xml")
         .containingClass(loadsOwnResourceInterceptorFactoryClassFile, "org/foo/LoadsOwnResourceInterceptorFactory.class")
         .containingClass(loadsOwnResourceInterceptorClassFile, "org/foo/LoadsOwnResourceInterceptor.class")
-        .containingClass(barUtils1ClassFile, "org/bar/BarUtils.class")
-        .containingClass(echoTestClassFile, "org/foo/EchoTest.class")
+        .containingClass(testArtifacts.createBarUtils1ClassFile(), "org/bar/BarUtils.class")
+        .containingClass(testArtifacts.createEchoTestClassFile(), "org/foo/EchoTest.class")
         .containingResource("test-resource.txt", "test-resource.txt")
         .containingResource("test-resource.txt", "test-resource-not-exported.txt");
 
@@ -159,6 +160,7 @@ public class ApplicationDeploymentLocalPackagesResourcesTestCase extends Abstrac
     executeApplicationFlow("main");
   }
 
+  @Override
   protected ApplicationFileBuilder appFileBuilder(final String artifactId) {
     return new ApplicationFileBuilder(artifactId)
         .withClassloaderModelVersion(classloaderModelVersion);

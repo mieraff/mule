@@ -13,6 +13,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.mule.runtime.deployment.model.api.artifact.ArtifactDescriptorConstants.MULE_LOADER_ID;
 import static org.mule.runtime.module.deployment.impl.internal.policy.PropertiesBundleDescriptorLoader.PROPERTIES_BUNDLE_DESCRIPTOR_LOADER_ID;
+import static org.mule.runtime.module.deployment.internal.util.TestArtifactsCachingFactory.createBundleDescriptorLoader;
 
 import org.mule.runtime.api.deployment.meta.MuleArtifactLoaderDescriptor;
 import org.mule.runtime.api.deployment.meta.MulePolicyModel.MulePolicyModelBuilder;
@@ -54,7 +55,8 @@ public class ApplicationPolicyRedeploymentTestCase extends AbstractDeploymentTes
     policyManager.registerPolicyTemplate(policyWithPlugin().getArtifactFile());
 
     ApplicationFileBuilder applicationFileBuilder =
-        createExtensionApplicationWithServices(APP_WITH_SIMPLE_EXTENSION_CONFIG, helloExtensionV1Plugin);
+        createExtensionApplicationWithServices(APP_WITH_SIMPLE_EXTENSION_CONFIG,
+                                               testArtifacts.createHelloExtensionV1PluginFileBuilder());
     addPackedAppFromBuilder(applicationFileBuilder);
 
     startDeployment();

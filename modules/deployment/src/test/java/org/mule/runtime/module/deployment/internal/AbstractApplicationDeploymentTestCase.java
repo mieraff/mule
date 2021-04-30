@@ -7,18 +7,13 @@
 
 package org.mule.runtime.module.deployment.internal;
 
-import static org.mule.runtime.container.internal.ClasspathModuleDiscoverer.EXPORTED_CLASS_PACKAGES_PROPERTY;
-
 import org.mule.runtime.module.deployment.impl.internal.builder.ApplicationFileBuilder;
-import org.mule.runtime.module.deployment.impl.internal.builder.ArtifactPluginFileBuilder;
-import org.mule.runtime.module.deployment.impl.internal.builder.JarFileBuilder;
 import org.mule.tck.util.CompilerUtils;
 
 import java.io.File;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Matcher;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 public abstract class AbstractApplicationDeploymentTestCase extends AbstractDeploymentTestCase {
@@ -50,17 +45,6 @@ public abstract class AbstractApplicationDeploymentTestCase extends AbstractDepl
   protected static File pluginForbiddenMuleThirdPartyEchoTestClassFile;
   protected static File privilegedExtensionV1JarFile;
 
-  // Application artifact builders
-  protected ApplicationFileBuilder incompleteAppFileBuilder;
-  protected ApplicationFileBuilder brokenAppFileBuilder;
-  protected ApplicationFileBuilder brokenAppWithFunkyNameAppFileBuilder;
-  protected ApplicationFileBuilder waitAppFileBuilder;
-  protected ApplicationFileBuilder dummyAppDescriptorWithPropsFileBuilder;
-  protected ApplicationFileBuilder dummyAppDescriptorWithStoppedFlowFileBuilder;
-
-  // Application plugin artifact builders
-  protected ArtifactPluginFileBuilder echoPluginWithLib1;
-
   @BeforeClass
   public static void compileTestClasses() throws Exception {
     pluginEcho2TestClassFile =
@@ -88,24 +72,6 @@ public abstract class AbstractApplicationDeploymentTestCase extends AbstractDepl
 
   public AbstractApplicationDeploymentTestCase(boolean parallelDeployment) {
     super(parallelDeployment);
-  }
-
-  @Before
-  public void before() {
-    incompleteAppFileBuilder = appFileBuilder("incomplete-app").definedBy("incomplete-app-config.xml");
-    brokenAppFileBuilder = appFileBuilder("broken-app").corrupted();
-    brokenAppWithFunkyNameAppFileBuilder = appFileBuilder("broken-app+", brokenAppFileBuilder);
-    waitAppFileBuilder = appFileBuilder("wait-app").definedBy("wait-app-config.xml");
-    dummyAppDescriptorWithPropsFileBuilder = appFileBuilder("dummy-app-with-props")
-        .definedBy("dummy-app-with-props-config.xml")
-        .containingClass(echoTestClassFile,
-                         "org/foo/EchoTest.class");
-
-    // Application plugin artifact builders
-    echoPluginWithLib1 = new ArtifactPluginFileBuilder("echoPlugin1")
-        .configuredWith(EXPORTED_CLASS_PACKAGES_PROPERTY, "org.foo")
-        .dependingOn(new JarFileBuilder("barUtils1", barUtils1_0JarFile))
-        .containingClass(pluginEcho1TestClassFile, "org/foo/Plugin1Echo.class");
   }
 
   protected ApplicationFileBuilder appFileBuilder(final String artifactId) {

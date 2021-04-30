@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.mule.runtime.module.deployment.internal.DeploymentDirectoryWatcher.CHANGE_CHECK_INTERVAL_PROPERTY;
 
-import io.qameta.allure.Issue;
 import org.mule.runtime.deployment.model.api.application.Application;
 import org.mule.runtime.module.artifact.api.classloader.ArtifactClassLoader;
 import org.mule.runtime.module.deployment.api.DeploymentListener;
@@ -21,11 +20,13 @@ import org.mule.tck.junit4.rule.SystemProperty;
 import org.mule.tck.probe.JUnitLambdaProbe;
 import org.mule.tck.probe.PollingProber;
 
+import java.lang.ref.PhantomReference;
+import java.lang.ref.ReferenceQueue;
+
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.lang.ref.PhantomReference;
-import java.lang.ref.ReferenceQueue;
+import io.qameta.allure.Issue;
 
 public abstract class DbDriverThreadLeakTestCase extends AbstractDeploymentTestCase {
 
@@ -89,7 +90,7 @@ public abstract class DbDriverThreadLeakTestCase extends AbstractDeploymentTestC
 
   private ApplicationFileBuilder getApplicationFileBuilder() throws Exception {
     return createExtensionApplicationWithServices(xmlFile + ".xml",
-                                                  oracleExtensionPlugin);
+                                                  testArtifacts.createOracleExtensionPluginFileBuilder());
   }
 
   @Override

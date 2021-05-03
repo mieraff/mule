@@ -23,6 +23,7 @@ import static org.mule.runtime.module.deployment.impl.internal.policy.Properties
 import static org.mule.runtime.module.deployment.impl.internal.policy.PropertiesBundleDescriptorLoader.PROPERTIES_BUNDLE_DESCRIPTOR_LOADER_ID;
 import static org.mule.runtime.module.deployment.impl.internal.policy.PropertiesBundleDescriptorLoader.TYPE;
 import static org.mule.runtime.module.deployment.impl.internal.policy.PropertiesBundleDescriptorLoader.VERSION;
+import static org.mule.runtime.module.deployment.internal.AbstractApplicationDeploymentTestCase.PRIVILEGED_EXTENSION_ARTIFACT_ID;
 import static org.mule.runtime.module.deployment.internal.AbstractDeploymentTestCase.BAR_POLICY_NAME;
 import static org.mule.runtime.module.deployment.internal.AbstractDeploymentTestCase.BAZ_POLICY_NAME;
 import static org.mule.runtime.module.deployment.internal.AbstractDeploymentTestCase.EXCEPTION_POLICY_NAME;
@@ -67,6 +68,7 @@ public class TestArtifactsCachingFactory {
 
   private final Map<String, File> classes = new HashMap<>();
   private final Map<String, File> jars = new HashMap<>();
+  private final Map<String, JarFileBuilder> jarsLibs = new HashMap<>();
   private final Map<String, ArtifactPluginFileBuilder> plugins = new HashMap<>();
   private final Map<String, ApplicationFileBuilder> applications = new HashMap<>();
   private final Map<String, DomainFileBuilder> domains = new HashMap<>();
@@ -95,6 +97,82 @@ public class TestArtifactsCachingFactory {
     return pluginEcho1TestClassFile;
   }
 
+  public File createPluginEcho2TestClassFile() throws URISyntaxException {
+    if (classes.containsKey("pluginEcho2TestClassFile")) {
+      return classes.get("pluginEcho2TestClassFile");
+    }
+
+    File pluginEcho2TestClassFile =
+        new SingleClassCompiler().dependingOn(createBarUtils2_0JarFile())
+            .compile(getResourceFile("/org/foo/echo/Plugin2Echo.java"));
+
+    classes.put("pluginEcho2TestClassFile", pluginEcho2TestClassFile);
+    return pluginEcho2TestClassFile;
+  }
+
+  public File createPluginEcho3TestClassFile() throws URISyntaxException {
+    if (classes.containsKey("pluginEcho3TestClassFile")) {
+      return classes.get("pluginEcho3TestClassFile");
+    }
+
+    File pluginEcho3TestClassFile =
+        new SingleClassCompiler().compile(getResourceFile("/org/foo/echo/Plugin3Echo.java"));
+
+    classes.put("pluginEcho3TestClassFile", pluginEcho3TestClassFile);
+    return pluginEcho3TestClassFile;
+  }
+
+  public File createPluginEchoSpiTestClassFile() throws URISyntaxException {
+    if (classes.containsKey("pluginEchoSpiTestClassFile")) {
+      return classes.get("pluginEchoSpiTestClassFile");
+    }
+
+    File pluginEchoSpiTestClassFile =
+        new SingleClassCompiler().compile(getResourceFile("/org/foo/echo/PluginSpiEcho.java"));
+
+    classes.put("pluginEchoSpiTestClassFile", pluginEchoSpiTestClassFile);
+    return pluginEchoSpiTestClassFile;
+  }
+
+  public File createPluginForbiddenJavaEchoTestClassFile() throws URISyntaxException {
+    if (classes.containsKey("pluginForbiddenJavaEchoTestClassFile")) {
+      return classes.get("pluginForbiddenJavaEchoTestClassFile");
+    }
+
+    File pluginForbiddenJavaEchoTestClassFile =
+        new SingleClassCompiler().dependingOn(createBarUtilsForbiddenJavaJarFile())
+            .compile(getResourceFile("/org/foo/echo/PluginForbiddenJavaEcho.java"));
+
+    classes.put("pluginForbiddenJavaEchoTestClassFile", pluginForbiddenJavaEchoTestClassFile);
+    return pluginForbiddenJavaEchoTestClassFile;
+  }
+
+  public File createPluginForbiddenMuleContainerEchoTestClassFile() throws URISyntaxException {
+    if (classes.containsKey("pluginForbiddenMuleContainerEchoTestClassFile")) {
+      return classes.get("pluginForbiddenMuleContainerEchoTestClassFile");
+    }
+
+    File pluginForbiddenMuleContainerEchoTestClassFile =
+        new SingleClassCompiler().dependingOn(createBarUtilsForbiddenMuleContainerJarFile())
+            .compile(getResourceFile("/org/foo/echo/PluginForbiddenMuleContainerEcho.java"));
+
+    classes.put("pluginForbiddenMuleContainerEchoTestClassFile", pluginForbiddenMuleContainerEchoTestClassFile);
+    return pluginForbiddenMuleContainerEchoTestClassFile;
+  }
+
+  public File createPluginForbiddenMuleThirdPartyEchoTestClassFile() throws URISyntaxException {
+    if (classes.containsKey("pluginForbiddenMuleThirdPartyEchoTestClassFile")) {
+      return classes.get("pluginForbiddenMuleThirdPartyEchoTestClassFile");
+    }
+
+    File pluginForbiddenMuleThirdPartyEchoTestClassFile =
+        new SingleClassCompiler().dependingOn(createBarUtilsForbiddenMuleThirdPartyJarFile())
+            .compile(getResourceFile("/org/foo/echo/PluginForbiddenMuleThirdPartyEcho.java"));
+
+    classes.put("pluginForbiddenMuleThirdPartyEchoTestClassFile", pluginForbiddenMuleThirdPartyEchoTestClassFile);
+    return pluginForbiddenMuleThirdPartyEchoTestClassFile;
+  }
+
   public File createBarUtils1ClassFile() throws URISyntaxException {
     if (classes.containsKey("barUtils1ClassFile")) {
       return classes.get("barUtils1ClassFile");
@@ -104,6 +182,64 @@ public class TestArtifactsCachingFactory {
 
     classes.put("barUtils1ClassFile", barUtils1ClassFile);
     return barUtils1ClassFile;
+  }
+
+  public File createBarUtils2ClassFile() throws URISyntaxException {
+    if (classes.containsKey("barUtils2ClassFile")) {
+      return classes.get("barUtils2ClassFile");
+    }
+
+    File barUtils2ClassFile = new SingleClassCompiler().compile(getResourceFile("/org/bar2/BarUtils.java"));
+
+    classes.put("barUtils2ClassFile", barUtils2ClassFile);
+    return barUtils2ClassFile;
+  }
+
+  public File createBarUtilsForbiddenJavaClassFile() throws URISyntaxException {
+    if (classes.containsKey("barUtilsForbiddenJavaClassFile")) {
+      return classes.get("barUtilsForbiddenJavaClassFile");
+    }
+
+    File barUtilsForbiddenJavaClassFile = new SingleClassCompiler().compile(getResourceFile("/java/lang/BarUtils.java"));
+
+    classes.put("barUtilsForbiddenJavaClassFile", barUtilsForbiddenJavaClassFile);
+    return barUtilsForbiddenJavaClassFile;
+  }
+
+  public File createBarUtilsForbiddenMuleContainerClassFile() throws URISyntaxException {
+    if (classes.containsKey("barUtilsForbiddenMuleContainerClassFile")) {
+      return classes.get("barUtilsForbiddenMuleContainerClassFile");
+    }
+
+    File barUtilsForbiddenMuleContainerClassFile =
+        new SingleClassCompiler().compile(getResourceFile("/org/mule/runtime/api/util/BarUtils.java"));
+
+    classes.put("barUtilsForbiddenMuleContainerClassFile", barUtilsForbiddenMuleContainerClassFile);
+    return barUtilsForbiddenMuleContainerClassFile;
+  }
+
+  public File createBarUtilsForbiddenMuleThirdPartyClassFile() throws URISyntaxException {
+    if (classes.containsKey("barUtilsForbiddenMuleThirdPartyClassFile")) {
+      return classes.get("barUtilsForbiddenMuleThirdPartyClassFile");
+    }
+
+    File barUtilsForbiddenMuleThirdPartyClassFile =
+        new SingleClassCompiler().compile(getResourceFile("/org/slf4j/BarUtils.java"));
+
+    classes.put("barUtilsForbiddenMuleThirdPartyClassFile", barUtilsForbiddenMuleThirdPartyClassFile);
+    return barUtilsForbiddenMuleThirdPartyClassFile;
+  }
+
+  public File createBarUtilsJavaxClassFile() throws URISyntaxException {
+    if (classes.containsKey("barUtilsJavaxClassFile")) {
+      return classes.get("barUtilsJavaxClassFile");
+    }
+
+    File barUtilsJavaxClassFile =
+        new SingleClassCompiler().compile(getResourceFile("/javax/annotation/BarUtils.java"));
+
+    classes.put("barUtilsJavaxClassFile", barUtilsJavaxClassFile);
+    return barUtilsJavaxClassFile;
   }
 
   public File createLoadsAppResourceCallbackClassFile() throws URISyntaxException {
@@ -129,6 +265,46 @@ public class TestArtifactsCachingFactory {
     return echoTestJarFile;
   }
 
+  public File createDefaulServiceEchoJarFile() throws URISyntaxException {
+    if (jars.containsKey("defaulServiceEchoJarFile")) {
+      return jars.get("defaulServiceEchoJarFile");
+    }
+
+    File defaulServiceEchoJarFile = new JarCompiler()
+        .compiling(getResourceFile("/org/mule/echo/DefaultEchoService.java"),
+                   getResourceFile("/org/mule/echo/EchoServiceProvider.java"))
+        .compile("mule-module-service-echo-default-4.0-SNAPSHOT.jar");
+
+    jars.put("defaulServiceEchoJarFile", defaulServiceEchoJarFile);
+    return defaulServiceEchoJarFile;
+  }
+
+  public File createDefaultFooServiceJarFile() throws URISyntaxException {
+    if (jars.containsKey("defaultFooServiceJarFile")) {
+      return jars.get("defaultFooServiceJarFile");
+    }
+
+    File defaultFooServiceJarFile = new JarCompiler().compiling(getResourceFile("/org/mule/service/foo/DefaultFooService.java"),
+                                                                getResourceFile("/org/mule/service/foo/FooServiceProvider.java"))
+        .dependingOn(createDefaulServiceEchoJarFile().getAbsoluteFile())
+        .compile("mule-module-service-foo-default-4.0-SNAPSHOT.jar");
+
+    jars.put("defaultFooServiceJarFile", defaultFooServiceJarFile);
+    return defaultFooServiceJarFile;
+  }
+
+  public File createLoadsAppResourceCallbackJarFile() throws URISyntaxException {
+    if (jars.containsKey("loadsAppResourceCallbackJarFile")) {
+      return jars.get("loadsAppResourceCallbackJarFile");
+    }
+
+    File loadsAppResourceCallbackJarFile = new JarCompiler().compiling(getResourceFile("/org/foo/LoadsAppResourceCallback.java"))
+        .compile("loadsAppResourceCallback.jar");
+
+    jars.put("loadsAppResourceCallbackJarFile", loadsAppResourceCallbackJarFile);
+    return loadsAppResourceCallbackJarFile;
+  }
+
   public File createBarUtils1_0JarFile() throws URISyntaxException {
     if (jars.containsKey("barUtils1_0JarFile")) {
       return jars.get("barUtils1_0JarFile");
@@ -143,18 +319,94 @@ public class TestArtifactsCachingFactory {
     return barUtils1_0JarFile;
   }
 
+  public File createBarUtils2_0JarFile() throws URISyntaxException {
+    if (jars.containsKey("barUtils2_0JarFile")) {
+      return jars.get("barUtils2_0JarFile");
+    }
+
+    File barUtils2_0JarFile =
+        new JarCompiler().compiling(getResourceFile("/org/bar2/BarUtils.java")).compile("bar-2.0.jar");
+
+    jars.put("barUtils2_0JarFile", barUtils2_0JarFile);
+    return barUtils2_0JarFile;
+  }
+
+  public File createBarUtilsForbiddenJavaJarFile() throws URISyntaxException {
+    if (jars.containsKey("barUtilsForbiddenJavaJarFile")) {
+      return jars.get("barUtilsForbiddenJavaJarFile");
+    }
+
+    File barUtilsForbiddenJavaJarFile =
+        new JarCompiler().compiling(getResourceFile("/java/lang/BarUtils.java")).compile("bar-javaForbidden.jar");
+
+    jars.put("barUtilsForbiddenJavaJarFile", barUtilsForbiddenJavaJarFile);
+    return barUtilsForbiddenJavaJarFile;
+  }
+
+  public File createBarUtilsForbiddenMuleContainerJarFile() throws URISyntaxException {
+    if (jars.containsKey("barUtilsForbiddenMuleContainerJarFile")) {
+      return jars.get("barUtilsForbiddenMuleContainerJarFile");
+    }
+
+    File barUtilsForbiddenMuleContainerJarFile =
+        new JarCompiler().compiling(createBarUtilsForbiddenMuleContainerClassFile())
+            .compile("bar-muleContainerForbidden.jar");
+
+    jars.put("barUtilsForbiddenMuleContainerJarFile", barUtilsForbiddenMuleContainerJarFile);
+    return barUtilsForbiddenMuleContainerJarFile;
+  }
+
+  public File createBarUtilsForbiddenMuleThirdPartyJarFile() throws URISyntaxException {
+    if (jars.containsKey("barUtilsForbiddenMuleThirdPartyJarFile")) {
+      return jars.get("barUtilsForbiddenMuleThirdPartyJarFile");
+    }
+
+    File barUtilsForbiddenMuleThirdPartyJarFile =
+        new JarCompiler().compiling(createBarUtilsForbiddenMuleThirdPartyClassFile())
+            .compile("bar-muleThirdPartyForbidden.jar");
+
+    jars.put("barUtilsForbiddenMuleThirdPartyJarFile", barUtilsForbiddenMuleThirdPartyJarFile);
+    return barUtilsForbiddenMuleThirdPartyJarFile;
+  }
+
+  public File createBarUtilsJavaxJarFile() throws URISyntaxException {
+    if (jars.containsKey("barUtilsJavaxJarFile")) {
+      return jars.get("barUtilsJavaxJarFile");
+    }
+
+    File barUtilsJavaxJarFile =
+        new JarCompiler().compiling(createBarUtilsJavaxClassFile()).compile("bar-javax.jar");
+
+    jars.put("barUtilsJavaxJarFile", barUtilsJavaxJarFile);
+    return barUtilsJavaxJarFile;
+  }
+
   public File createSimpleExtensionJarFile() throws URISyntaxException {
     if (jars.containsKey("simpleExtensionJarFile")) {
       return jars.get("simpleExtensionJarFile");
     }
 
     File simpleExtensionJarFile =
-        new CompilerUtils.ExtensionCompiler().compiling(getResourceFile("/org/foo/simple/SimpleExtension.java"),
+        new ExtensionCompiler().compiling(getResourceFile("/org/foo/simple/SimpleExtension.java"),
                                                         getResourceFile("/org/foo/simple/SimpleOperation.java"))
             .compile("mule-module-simple-4.0-SNAPSHOT.jar", "1.0.0");
 
     jars.put("simpleExtensionJarFile", simpleExtensionJarFile);
     return simpleExtensionJarFile;
+  }
+
+  public File createWithErrorDeclarationExtensionJarFile() throws URISyntaxException {
+    if (jars.containsKey("withErrorDeclarationJarFile")) {
+      return jars.get("withErrorDeclarationJarFile");
+    }
+
+    File withErrorDeclarationJarFile =
+        new ExtensionCompiler().compiling(getResourceFile("/org/foo/withErrorDeclaration/WithErrorDeclarationExtension.java"),
+                                          getResourceFile("/org/foo/withErrorDeclaration/WithErrorDeclarationOperation.java"))
+            .compile("mule-module-with-error-declaration-4.0-SNAPSHOT.jar", "1.0.0");
+
+    jars.put("withErrorDeclarationJarFile", withErrorDeclarationJarFile);
+    return withErrorDeclarationJarFile;
   }
 
   public File createHello1ExtensionV1JarFile() throws URISyntaxException {
@@ -241,6 +493,61 @@ public class TestArtifactsCachingFactory {
 
     jars.put("loadClassExtensionJarFile", loadClassExtensionJarFile);
     return loadClassExtensionJarFile;
+  }
+
+  public File createPrivilegedExtensionV1JarFile() throws URISyntaxException {
+    if (jars.containsKey("privilegedExtensionV1JarFile")) {
+      return jars.get("privilegedExtensionV1JarFile");
+    }
+
+    // Application plugin artifact builders
+    File privilegedExtensionV1JarFile = new ExtensionCompiler()
+        .compiling(getResourceFile("/org/foo/privileged/PrivilegedExtension.java"),
+                   getResourceFile("/org/foo/privileged/PrivilegedOperation.java"))
+        .compile("mule-module-privileged-1.0.jar", "1.0");
+
+    jars.put("privilegedExtensionV1JarFile", privilegedExtensionV1JarFile);
+    return privilegedExtensionV1JarFile;
+  }
+
+  public JarFileBuilder createOverriderLibraryJarFile() throws URISyntaxException {
+    if (jarsLibs.containsKey("overriderLibrary")) {
+      return jarsLibs.get("overriderLibrary");
+    }
+
+    JarFileBuilder overriderLibrary = new JarFileBuilder("overrider-library",
+                                               new JarCompiler()
+                                                   .compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe.java"))
+                                                             .compile("overrider-library.jar"));
+
+    jarsLibs.put("overriderLibrary", overriderLibrary);
+    return overriderLibrary;
+  }
+
+  public JarFileBuilder createOverrider2LibraryJarFile() throws URISyntaxException {
+    if (jarsLibs.containsKey("overrider2Library")) {
+      return jarsLibs.get("overrider2Library");
+    }
+
+    JarFileBuilder overrider2Library = new JarFileBuilder("overrider2-library",
+                                                new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe2.java"))
+                                                              .compile("overrider2-library.jar"));
+
+    jarsLibs.put("overrider2Library", overrider2Library);
+    return overrider2Library;
+  }
+
+  public JarFileBuilder createOverriderTestLibraryJarFile() throws URISyntaxException {
+    if (jarsLibs.containsKey("overriderTestLibrary")) {
+      return jarsLibs.get("overriderTestLibrary");
+    }
+
+    JarFileBuilder overriderTestLibrary = new JarFileBuilder("overrider-test-library",
+                                               new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/test/OverrideMe.java"))
+                                                                 .compile("overrider-test-library.jar"));
+
+    jarsLibs.put("overriderTestLibrary", overriderTestLibrary);
+    return overriderTestLibrary;
   }
 
   public ArtifactPluginFileBuilder createHelloExtensionV2PluginFileBuilder() throws URISyntaxException {
@@ -519,6 +826,29 @@ public class TestArtifactsCachingFactory {
     return echoPluginWithLib1;
   }
 
+  public ArtifactPluginFileBuilder createPrivilegedExtensionPlugin() throws URISyntaxException {
+    if (plugins.containsKey("privilegedExtensionPlugin")) {
+      return plugins.get("privilegedExtensionPlugin");
+    }
+
+    MulePluginModel.MulePluginModelBuilder mulePluginModelBuilder = new MulePluginModel.MulePluginModelBuilder()
+        .setMinMuleVersion(MIN_MULE_VERSION).setName(PRIVILEGED_EXTENSION_ARTIFACT_ID).setRequiredProduct(MULE)
+        .withBundleDescriptorLoader(createBundleDescriptorLoader(PRIVILEGED_EXTENSION_ARTIFACT_ID, MULE_EXTENSION_CLASSIFIER,
+                                                                 PROPERTIES_BUNDLE_DESCRIPTOR_LOADER_ID, "1.0.0"));
+    mulePluginModelBuilder.withClassLoaderModelDescriptorLoader(new MuleArtifactLoaderDescriptorBuilder()
+        .setId(MULE_LOADER_ID)
+        .build());
+    mulePluginModelBuilder.withExtensionModelDescriber().setId(JAVA_LOADER_ID)
+        .addProperty("type", "org.foo.hello.PrivilegedExtension")
+        .addProperty("version", "1.0");
+    final ArtifactPluginFileBuilder privilegedExtensionPlugin = new ArtifactPluginFileBuilder(PRIVILEGED_EXTENSION_ARTIFACT_ID)
+        .dependingOn(new JarFileBuilder("privilegedExtensionV1", createPrivilegedExtensionV1JarFile()))
+        .describedBy(mulePluginModelBuilder.build());
+    plugins.put("privilegedExtensionPlugin", privilegedExtensionPlugin);
+    return privilegedExtensionPlugin;
+  }
+
+
   public ApplicationFileBuilder createEmptyAppFileBuilder() {
     if (applications.containsKey("emptyApp")) {
       return applications.get("emptyApp");
@@ -677,7 +1007,6 @@ public class TestArtifactsCachingFactory {
         new DomainFileBuilder("dummy-domain").definedBy("empty-domain-config.xml");
     domains.put("dummyDomain", dummyDomain);
     return dummyDomain;
-
   }
 
   public DomainFileBuilder createExceptionThrowingPluginImportingDomainFileBuilder() throws URISyntaxException {
@@ -690,7 +1019,183 @@ public class TestArtifactsCachingFactory {
             .dependingOn(createExceptionThrowingPluginFileBuilder());
     domains.put("exceptionThrowingPluginImportingDomain", exceptionThrowingPluginImportingDomain);
     return exceptionThrowingPluginImportingDomain;
+  }
 
+  public DomainFileBuilder createBrokenDomainFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("brokenDomain")) {
+      return domains.get("brokenDomain");
+    }
+
+    DomainFileBuilder brokenDomain = new DomainFileBuilder("brokenDomain").corrupted();
+    domains.put("brokenDomain", brokenDomain);
+    return brokenDomain;
+  }
+
+  public DomainFileBuilder createEmptyDomainFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("emptyDomain")) {
+      return domains.get("emptyDomain");
+    }
+
+    DomainFileBuilder emptyDomain = new DomainFileBuilder("empty-domain").definedBy("empty-domain-config.xml");
+    domains.put("emptyDomain", emptyDomain);
+    return emptyDomain;
+  }
+
+  public DomainFileBuilder createWaitDomainFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("waitDomain")) {
+      return domains.get("waitDomain");
+    }
+
+    DomainFileBuilder waitDomain = new DomainFileBuilder("wait-domain").definedBy("wait-domain-config.xml");
+    domains.put("waitDomain", waitDomain);
+    return waitDomain;
+  }
+
+  public DomainFileBuilder createIncompleteDomainFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("incompleteDomain")) {
+      return domains.get("incompleteDomain");
+    }
+
+    DomainFileBuilder incompleteDomain =
+        new DomainFileBuilder("incompleteDomain").definedBy("incomplete-domain-config.xml");
+    domains.put("incompleteDomain", incompleteDomain);
+    return incompleteDomain;
+  }
+
+  public DomainFileBuilder createInvalidDomainBundleFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("invalidDomainBundle")) {
+      return domains.get("invalidDomainBundle");
+    }
+
+    DomainFileBuilder invalidDomainBundle =
+        new DomainFileBuilder("invalid-domain-bundle").definedBy("incomplete-domain-config.xml");
+    domains.put("invalidDomainBundle", invalidDomainBundle);
+    return invalidDomainBundle;
+  }
+
+  public DomainFileBuilder createDummyDomainBundleFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("dummyDomainBundle")) {
+      return domains.get("dummyDomainBundle");
+    }
+
+    DomainFileBuilder dummyDomainBundle = new DomainFileBuilder("dummy-domain-bundle")
+        .definedBy("empty-domain-config.xml");
+    domains.put("dummyDomainBundle", dummyDomainBundle);
+    return dummyDomainBundle;
+  }
+
+  public DomainFileBuilder createDummyUndeployableDomainFileBuilderFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("dummyUndeployableDomain")) {
+      return domains.get("dummyUndeployableDomain");
+    }
+
+    DomainFileBuilder dummyUndeployableDomain =
+        new DomainFileBuilder("dummy-undeployable-domain")
+            .definedBy("empty-domain-config.xml").deployedWith("redeployment.enabled", "false");
+    domains.put("dummyUndeployableDomain", dummyUndeployableDomain);
+    return dummyUndeployableDomain;
+  }
+
+  public DomainFileBuilder createSharedDomainFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("sharedDomain")) {
+      return domains.get("sharedDomain");
+    }
+
+    DomainFileBuilder sharedDomain =
+        new DomainFileBuilder("shared-domain").definedBy("shared-domain-config.xml");
+    domains.put("sharedDomain", sharedDomain);
+    return sharedDomain;
+  }
+
+  public DomainFileBuilder createDomainWithPropsFileBuilder() throws URISyntaxException {
+    if (domains.containsKey("domainWithProps")) {
+      return domains.get("domainWithProps");
+    }
+
+    DomainFileBuilder domainWithProps =
+        new DomainFileBuilder("domain-with-props").definedBy("domain-with-props-config.xml");
+    domains.put("domainWithProps", domainWithProps);
+    return domainWithProps;
+  }
+
+  public DomainFileBuilder createEmptyDomain100FileBuilder() throws URISyntaxException {
+    if (domains.containsKey("emptyDomain100")) {
+      return domains.get("emptyDomain100");
+    }
+
+    DomainFileBuilder emptyDomain100 =
+        new DomainFileBuilder("empty-domain").definedBy("empty-domain-config.xml").withVersion("1.0.0");
+    domains.put("emptyDomain100", emptyDomain100);
+    return emptyDomain100;
+  }
+
+  public DomainFileBuilder createEmptyDomain101FileBuilder() throws URISyntaxException {
+    if (domains.containsKey("emptyDomain101")) {
+      return domains.get("emptyDomain101");
+    }
+
+    DomainFileBuilder emptyDomain101 =
+        new DomainFileBuilder("empty-domain").definedBy("empty-domain-config.xml").withVersion("1.0.1");
+    domains.put("emptyDomain101", emptyDomain101);
+    return emptyDomain101;
+  }
+
+  public ApplicationFileBuilder createDummyDomainApp1FileBuilder() throws URISyntaxException {
+    if (applications.containsKey("dummyDomainApp1")) {
+      return applications.get("dummyDomainApp1");
+    }
+
+    ApplicationFileBuilder dummyDomainApp1 =
+        new ApplicationFileBuilder("dummy-domain-app1").definedBy("empty-config.xml")
+            .dependingOn(createDummyDomainFileBuilder());
+    applications.put("dummyDomainApp1", dummyDomainApp1);
+    return dummyDomainApp1;
+  }
+
+  public ApplicationFileBuilder createDummyDomainApp2FileBuilder() throws URISyntaxException {
+    if (applications.containsKey("dummyDomainApp2")) {
+      return applications.get("dummyDomainApp2");
+    }
+
+    ApplicationFileBuilder dummyDomainApp2 =
+        new ApplicationFileBuilder("dummy-domain-app2").definedBy("empty-config.xml")
+            .dependingOn(createDummyDomainFileBuilder());
+    applications.put("dummyDomainApp2", dummyDomainApp2);
+    return dummyDomainApp2;
+  }
+
+  public ApplicationFileBuilder createDummyDomainApp3FileBuilder() throws URISyntaxException {
+    if (applications.containsKey("dummyDomainApp3")) {
+      return applications.get("dummyDomainApp3");
+    }
+
+    ApplicationFileBuilder dummyDomainApp3 =
+        new ApplicationFileBuilder("dummy-domain-app3")
+            .definedBy("bad-app-config.xml").dependingOn(createDummyDomainFileBuilder());
+    applications.put("dummyDomainApp3", dummyDomainApp3);
+    return dummyDomainApp3;
+  }
+
+  public ApplicationFileBuilder createSharedAAppFileBuilder() throws URISyntaxException {
+    if (applications.containsKey("sharedAApp")) {
+      return applications.get("sharedAApp");
+    }
+
+    ApplicationFileBuilder sharedAApp = new ApplicationFileBuilder("shared-app-a")
+        .definedBy("shared-a-app-config.xml").dependingOn(createSharedDomainFileBuilder());
+    applications.put("sharedAApp", sharedAApp);
+    return sharedAApp;
+  }
+
+  public ApplicationFileBuilder createSharedBAppFileBuilder() throws URISyntaxException {
+    if (applications.containsKey("sharedBApp")) {
+      return applications.get("sharedBApp");
+    }
+
+    ApplicationFileBuilder sharedBApp = new ApplicationFileBuilder("shared-app-b")
+        .definedBy("shared-b-app-config.xml").dependingOn(createSharedDomainFileBuilder());
+    applications.put("sharedBApp", sharedBApp);
+    return sharedBApp;
   }
 
   public PolicyFileBuilder createFooPolicyFileBuilder() throws URISyntaxException {

@@ -1049,7 +1049,7 @@ public class ApplicationDeploymentTestCase extends AbstractApplicationDeployment
   public void failsToDeploysAppZipWithInvalidPrivilegedExtensionPlugin() throws Exception {
     ArtifactPluginFileBuilder invalidPrivilegedPlugin =
         new ArtifactPluginFileBuilder("invalidPrivilegedPlugin")
-            .dependingOn(new JarFileBuilder("privilegedExtensionV1", privilegedExtensionV1JarFile))
+            .dependingOn(new JarFileBuilder("privilegedExtensionV1", testArtifacts.createPrivilegedExtensionV1JarFile()))
             .configuredWith(EXPORTED_RESOURCE_PROPERTY, "/");
 
     ApplicationFileBuilder applicationFileBuilder = appFileBuilder("invalidPrivilegedPluginApp")

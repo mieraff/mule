@@ -28,7 +28,6 @@ import org.mule.runtime.module.deployment.logging.MemoryAppenderResource;
 import org.mule.tck.junit4.rule.SystemProperty;
 import org.mule.tck.probe.PollingProber;
 import org.mule.tck.probe.Probe;
-import org.mule.tck.util.CompilerUtils.JarCompiler;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,9 +53,6 @@ public class ClassloadingTroubleshootingTestCase extends AbstractDeploymentTestC
   public SystemProperty muleDesignModeSystemProperty = new SystemProperty(MULE_DESIGN_MODE, "true");
 
   private File mavenRepoFolder;
-  private JarFileBuilder overriderLibrary;
-  private JarFileBuilder overrider2Library;
-  private JarFileBuilder overriderTestLibrary;
   private MemoryAppenderResource appender;
 
   public ClassloadingTroubleshootingTestCase(boolean parallelDeployment) {
@@ -71,19 +67,6 @@ public class ClassloadingTroubleshootingTestCase extends AbstractDeploymentTestC
   @Before
   public void setup() throws URISyntaxException {
     mavenRepoFolder = Paths.get(getMuleBaseFolder().getAbsolutePath(), "repository").toFile();
-    overriderLibrary =
-        new JarFileBuilder("overrider-library",
-                           new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe.java"))
-                               .compile("overrider-library.jar"));
-    overrider2Library =
-        new JarFileBuilder("overrider2-library",
-                           new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe2.java"))
-                               .compile("overrider2-library.jar"));
-    overriderTestLibrary =
-        new JarFileBuilder("overrider-test-library",
-                           new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/test/OverrideMe.java"))
-                               .compile("overrider-test-library.jar"));
-
     appender = new MemoryAppenderResource(containerClassLoader.getClassLoader());
   }
 
@@ -234,39 +217,38 @@ public class ClassloadingTroubleshootingTestCase extends AbstractDeploymentTestC
     return builder;
   }
 
-  private void completeDomain(DomainFileBuilder domainFileBuilder, boolean useLightWeightPackage) throws IOException {
-    addOverriderTestLibrary(
-                            addOverrideLibrary(
-                                               addJmsPropertiesResourceFile(addDomainConfigYamlFile(domainFileBuilder)),
+  private void completeDomain(DomainFileBuilder domainFileBuilder, boolean useLightWeightPackage)
+      throws IOException, URISyntaxException {
+    addOverriderTestLibrary(addOverrideLibrary(addJmsPropertiesResourceFile(addDomainConfigYamlFile(domainFileBuilder)),
                                                useLightWeightPackage),
                             useLightWeightPackage);
   }
 
   private <T extends DeployableFileBuilder<T>> DeployableFileBuilder<T> addOverrideLibrary(DeployableFileBuilder<T> deployableFileBuilder,
                                                                                            boolean useLightWeightPackage)
-      throws IOException {
+      throws IOException, URISyntaxException {
     if (useLightWeightPackage) {
-      addDependencyToRepository(overriderLibrary);
+      addDependencyToRepository(testArtifacts.createOverriderLibraryJarFile());
     }
-    return deployableFileBuilder.dependingOn(overriderLibrary);
+    return deployableFileBuilder.dependingOn(testArtifacts.createOverriderLibraryJarFile());
   }
 
   private <T extends DeployableFileBuilder<T>> DeployableFileBuilder<T> addOverride2Library(DeployableFileBuilder<T> deployableFileBuilder,
                                                                                             boolean useLightWeightPackage)
-      throws IOException {
+      throws IOException, URISyntaxException {
     if (useLightWeightPackage) {
-      addDependencyToRepository(overrider2Library);
+      addDependencyToRepository(testArtifacts.createOverrider2LibraryJarFile());
     }
-    return deployableFileBuilder.dependingOn(overrider2Library);
+    return deployableFileBuilder.dependingOn(testArtifacts.createOverrider2LibraryJarFile());
   }
 
   private <T extends DeployableFileBuilder<T>> DeployableFileBuilder<T> addOverriderTestLibrary(DeployableFileBuilder<T> deployableFileBuilder,
                                                                                                 boolean useLightWeightPackage)
-      throws IOException {
+      throws IOException, URISyntaxException {
     if (useLightWeightPackage) {
-      addDependencyToRepository(overriderTestLibrary);
+      addDependencyToRepository(testArtifacts.createOverriderTestLibraryJarFile());
     }
-    return deployableFileBuilder.dependingOn(overriderTestLibrary);
+    return deployableFileBuilder.dependingOn(testArtifacts.createOverriderTestLibraryJarFile());
   }
 
   private <T extends DeployableFileBuilder<T>> DeployableFileBuilder<T> addDomainConfigYamlFile(DeployableFileBuilder<T> deployableFileBuilder) {

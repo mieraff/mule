@@ -82,7 +82,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -107,9 +106,6 @@ public class ApplicationPolicyDeploymentTestCase extends AbstractDeploymentTestC
   private static final String POLICY_PROPERTY_VALUE = "policyPropertyValue";
   private static final String POLICY_PROPERTY_KEY = "policyPropertyKey";
   private static final String FOO_POLICY_NAME = "fooPolicy";
-
-  private static File simpleExtensionJarFile;
-  private static File withErrorDeclarationExtensionJarFile;
 
   @Rule
   public ExpectedException expectedEx = none();
@@ -143,20 +139,6 @@ public class ApplicationPolicyDeploymentTestCase extends AbstractDeploymentTestC
     this.shareErrorTypeRepository = shareErrorType;
     this.shareErrorTypeRepoSystemProperty =
         new SystemProperty(SHARE_ERROR_TYPE_REPOSITORY_PROPERTY, Boolean.toString(shareErrorType));
-  }
-
-  @BeforeClass
-  public static void compileTestClasses() throws Exception {
-    simpleExtensionJarFile =
-        new CompilerUtils.ExtensionCompiler().compiling(getResourceFile("/org/foo/simple/SimpleExtension.java"),
-                                                        getResourceFile("/org/foo/simple/SimpleOperation.java"))
-            .compile("mule-module-simple-4.0-SNAPSHOT.jar", "1.0.0");
-
-    withErrorDeclarationExtensionJarFile =
-        new CompilerUtils.ExtensionCompiler()
-            .compiling(getResourceFile("/org/foo/withErrorDeclaration/WithErrorDeclarationExtension.java"),
-                       getResourceFile("/org/foo/withErrorDeclaration/WithErrorDeclarationOperation.java"))
-            .compile("mule-module-with-error-declaration-4.0-SNAPSHOT.jar", "1.0.0");
   }
 
   @Test
@@ -898,7 +880,7 @@ public class ApplicationPolicyDeploymentTestCase extends AbstractDeploymentTestC
         .dependingOn(injectedExtension);
   }
 
-  private ArtifactPluginFileBuilder createSingleExtensionPlugin() {
+  private ArtifactPluginFileBuilder createSingleExtensionPlugin() throws URISyntaxException {
     MulePluginModel.MulePluginModelBuilder mulePluginModelBuilder = new MulePluginModel.MulePluginModelBuilder()
         .setMinMuleVersion(MIN_MULE_VERSION).setName("simpleExtensionPlugin").setRequiredProduct(MULE)
         .withBundleDescriptorLoader(createBundleDescriptorLoader("simpleExtensionPlugin", MULE_EXTENSION_CLASSIFIER,
@@ -909,11 +891,11 @@ public class ApplicationPolicyDeploymentTestCase extends AbstractDeploymentTestC
         .addProperty("type", "org.foo.simple.SimpleExtension")
         .addProperty("version", "1.0.0");
     return new ArtifactPluginFileBuilder("simpleExtensionPlugin")
-        .dependingOn(new JarFileBuilder("simpleExtension", simpleExtensionJarFile))
+        .dependingOn(new JarFileBuilder("simpleExtension", testArtifacts.createSimpleExtensionJarFile()))
         .describedBy(mulePluginModelBuilder.build());
   }
 
-  private ArtifactPluginFileBuilder createWithErrorDeclarationExtensionPlugin() {
+  private ArtifactPluginFileBuilder createWithErrorDeclarationExtensionPlugin() throws URISyntaxException {
     MulePluginModel.MulePluginModelBuilder mulePluginModelBuilder = new MulePluginModel.MulePluginModelBuilder()
         .setMinMuleVersion(MIN_MULE_VERSION).setName("withErrorDeclarationExtensionPlugin").setRequiredProduct(MULE)
         .withBundleDescriptorLoader(createBundleDescriptorLoader("withErrorDeclarationExtensionPlugin", MULE_EXTENSION_CLASSIFIER,
@@ -924,7 +906,8 @@ public class ApplicationPolicyDeploymentTestCase extends AbstractDeploymentTestC
         .addProperty("type", "org.foo.withErrorDeclaration.WithErrorDeclarationExtension")
         .addProperty("version", "1.0.0");
     return new ArtifactPluginFileBuilder("withErrorDeclarationExtensionPlugin")
-        .dependingOn(new JarFileBuilder("withErrorDeclarationExtension", withErrorDeclarationExtensionJarFile))
+        .dependingOn(new JarFileBuilder("withErrorDeclarationExtension",
+                                        testArtifacts.createWithErrorDeclarationExtensionJarFile()))
         .describedBy(mulePluginModelBuilder.build());
   }
 

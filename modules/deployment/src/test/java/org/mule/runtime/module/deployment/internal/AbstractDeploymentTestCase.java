@@ -117,8 +117,6 @@ import org.mule.tck.probe.Probe;
 import org.mule.tck.probe.Prober;
 import org.mule.tck.probe.file.FileDoesNotExists;
 import org.mule.tck.probe.file.FileExists;
-import org.mule.tck.util.CompilerUtils.JarCompiler;
-import org.mule.tck.util.CompilerUtils.SingleClassCompiler;
 import org.mule.test.runner.classloader.TestModuleDiscoverer;
 
 import java.io.File;
@@ -203,72 +201,12 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
 
   protected static final TestArtifactsCachingFactory testArtifacts = new TestArtifactsCachingFactory();
 
-  // Dynamically compiled classes and jars
-  protected static File barUtils1ClassFile;
-
-  protected static File barUtils2ClassFile;
-  protected static File barUtils2_0JarFile;
-
-  protected static File barUtilsJavaxClassFile;
-  protected static File barUtilsJavaxJarFile;
-
-  protected static File barUtilsForbiddenJavaClassFile;
-  protected static File barUtilsForbiddenJavaJarFile;
-
-  protected static File barUtilsForbiddenMuleContainerClassFile;
-  protected static File barUtilsForbiddenMuleContainerJarFile;
-
-  protected static File barUtilsForbiddenMuleThirdPartyClassFile;
-  protected static File barUtilsForbiddenMuleThirdPartyJarFile;
-
-  private static File defaulServiceEchoJarFile;
-
-  private static File defaultFooServiceJarFile;
-
-  protected static File loadsAppResourceCallbackJarFile;
-
   private static Boolean internalIsRunningTests;
 
   protected static Latch undeployLatch = new Latch();
 
   @BeforeClass
   public static void beforeClass() throws URISyntaxException, IllegalAccessException {
-    barUtils2ClassFile = new SingleClassCompiler().compile(getResourceFile("/org/bar2/BarUtils.java"));
-    barUtils2_0JarFile = new JarCompiler().compiling(getResourceFile("/org/bar2/BarUtils.java")).compile("bar-2.0.jar");
-
-    barUtilsJavaxClassFile = new SingleClassCompiler().compile(getResourceFile("/javax/annotation/BarUtils.java"));
-    barUtilsJavaxJarFile =
-        new JarCompiler().compiling(getResourceFile("/javax/annotation/BarUtils.java")).compile("bar-javax.jar");
-
-    barUtilsForbiddenJavaClassFile = new SingleClassCompiler().compile(getResourceFile("/java/lang/BarUtils.java"));
-    barUtilsForbiddenJavaJarFile =
-        new JarCompiler().compiling(getResourceFile("/java/lang/BarUtils.java")).compile("bar-javaForbidden.jar");
-
-    barUtilsForbiddenMuleContainerClassFile =
-        new SingleClassCompiler().compile(getResourceFile("/org/mule/runtime/api/util/BarUtils.java"));
-    barUtilsForbiddenMuleContainerJarFile =
-        new JarCompiler().compiling(getResourceFile("/org/mule/runtime/api/util/BarUtils.java"))
-            .compile("bar-muleContainerForbidden.jar");
-
-    barUtilsForbiddenMuleThirdPartyClassFile =
-        new SingleClassCompiler().compile(getResourceFile("/org/slf4j/BarUtils.java"));
-    barUtilsForbiddenMuleThirdPartyJarFile =
-        new JarCompiler().compiling(getResourceFile("/org/slf4j/BarUtils.java"))
-            .compile("bar-muleThirdPartyForbidden.jar");
-
-    defaulServiceEchoJarFile = new JarCompiler()
-        .compiling(getResourceFile("/org/mule/echo/DefaultEchoService.java"),
-                   getResourceFile("/org/mule/echo/EchoServiceProvider.java"))
-        .compile("mule-module-service-echo-default-4.0-SNAPSHOT.jar");
-
-    defaultFooServiceJarFile = new JarCompiler().compiling(getResourceFile("/org/mule/service/foo/DefaultFooService.java"),
-                                                           getResourceFile("/org/mule/service/foo/FooServiceProvider.java"))
-        .dependingOn(defaulServiceEchoJarFile.getAbsoluteFile())
-        .compile("mule-module-service-foo-default-4.0-SNAPSHOT.jar");
-
-    loadsAppResourceCallbackJarFile = new JarCompiler().compiling(getResourceFile("/org/foo/LoadsAppResourceCallback.java"))
-        .compile("loadsAppResourceCallback.jar");
-
     internalIsRunningTests =
         (Boolean) readDeclaredStaticField(TestComponentBuildingDefinitionProvider.class, "internalIsRunningTests", true);
     writeDeclaredStaticField(TestComponentBuildingDefinitionProvider.class, "internalIsRunningTests", true, true);
@@ -442,14 +380,14 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
     return applicationFileBuilder;
   }
 
-  protected void installFooService() throws IOException {
+  protected void installFooService() throws IOException, URISyntaxException {
     installService("fooService", "org.mule.runtime.service.test.api.FooService", "org.mule.service.foo.FooServiceProvider",
-                   defaultFooServiceJarFile);
+                   testArtifacts.createDefaultFooServiceJarFile());
   }
 
-  protected void installEchoService() throws IOException {
+  protected void installEchoService() throws IOException, URISyntaxException {
     installService("echoService", "org.mule.runtime.service.test.api.EchoService", "org.mule.echo.EchoServiceProvider",
-                   defaulServiceEchoJarFile);
+                   testArtifacts.createDefaulServiceEchoJarFile());
   }
 
   private void installService(String serviceName, String satisfiedServiceClassName, String serviceProviderClassName,

@@ -6,7 +6,6 @@
  */
 package org.mule.runtime.module.deployment.internal;
 
-import static java.lang.Integer.getInteger;
 import static java.lang.String.format;
 import static java.util.Arrays.sort;
 import static java.util.Arrays.stream;
@@ -70,7 +69,7 @@ import org.slf4j.LoggerFactory;
 public class DeploymentDirectoryWatcher implements Runnable {
 
   public static final String ARTIFACT_ANCHOR_SUFFIX = "-anchor.txt";
-  public static final String CHANGE_CHECK_INTERVAL_PROPERTY = "mule.launcher.changeCheckInterval";
+  public static final String CHANGE_CHECK_INTERVAL_PROPERTY = SYSTEM_PROPERTY_PREFIX + "launcher.changeCheckInterval";
   public static final IOFileFilter JAR_ARTIFACT_FILTER =
       new AndFileFilter(new SuffixFileFilter(JAR_FILE_SUFFIX, INSENSITIVE), FileFileFilter.FILE);
   public static final IOFileFilter ZIP_ARTIFACT_FILTER =
@@ -83,8 +82,7 @@ public class DeploymentDirectoryWatcher implements Runnable {
    */
   public static final String DEPLOYMENT_APPLICATION_PROPERTY = "mule.deploy.applications";
 
-  protected static final int DEFAULT_CHANGES_CHECK_INTERVAL_MS =
-      getInteger(SYSTEM_PROPERTY_PREFIX + DeploymentDirectoryWatcher.class.getName() + ".defaultChangesCheckIntervalMs", 5000);
+  protected static final int DEFAULT_CHANGES_CHECK_INTERVAL_MS = 5000;
 
   protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -139,6 +139,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -206,11 +207,37 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
 
   protected static Latch undeployLatch = new Latch();
 
+  @ClassRule
+  public static TemporaryFolder compilerWorkFolder = new TemporaryFolder();
+
+  private static File muleHome;
+  private static File services;
+
+  @BeforeClass
+  public static void createMuleHome() throws IOException {
+    final String tmpDir = getProperty("java.io.tmpdir");
+    muleHome = new File(new File(tmpDir, "mule_home"), AbstractDeploymentTestCase.class.getSimpleName() + currentTimeMillis());
+    setProperty(MULE_HOME_DIRECTORY_PROPERTY, muleHome.getCanonicalPath());
+
+    services = getServicesFolder();
+    services.mkdirs();
+    copyDirectory(buildSchedulerServiceFile(compilerWorkFolder.newFolder(SCHEDULER_SERVICE_NAME)),
+                  new File(services, SCHEDULER_SERVICE_NAME));
+    copyDirectory(buildExpressionLanguageServiceFile(compilerWorkFolder.newFolder(EXPRESSION_LANGUAGE_SERVICE_NAME)),
+                  new File(services, EXPRESSION_LANGUAGE_SERVICE_NAME));
+
+  }
+
   @BeforeClass
   public static void beforeClass() throws URISyntaxException, IllegalAccessException {
     internalIsRunningTests =
         (Boolean) readDeclaredStaticField(TestComponentBuildingDefinitionProvider.class, "internalIsRunningTests", true);
     writeDeclaredStaticField(TestComponentBuildingDefinitionProvider.class, "internalIsRunningTests", true, true);
+  }
+
+  @AfterClass
+  public static void deleteMuleHome() {
+    deleteTree(muleHome);
   }
 
   @AfterClass
@@ -223,7 +250,6 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
     return new File(AbstractDeploymentTestCase.class.getResource(resource).toURI());
   }
 
-  private File muleHome;
   protected File appsDir;
   protected File domainsDir;
   protected ServiceManager serviceManager;
@@ -245,11 +271,6 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
   @Rule
   public DynamicPort httpPort = new DynamicPort("httpPort");
 
-  @Rule
-  public TemporaryFolder compilerWorkFolder = new TemporaryFolder();
-
-  private File services;
-
   public AbstractDeploymentTestCase(boolean parallelDeployment) {
     if (parallelDeployment) {
       this.parallelDeployment = new SystemProperty(PARALLEL_DEPLOYMENT_PROPERTY, "");
@@ -258,24 +279,14 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
 
   @Before
   public void setUp() throws Exception {
-    final String tmpDir = getProperty("java.io.tmpdir");
-    muleHome = new File(new File(tmpDir, "mule_home"), getClass().getSimpleName() + currentTimeMillis());
     appsDir = new File(muleHome, "apps");
     appsDir.mkdirs();
     domainsDir = new File(muleHome, "domains");
     domainsDir.mkdirs();
-    setProperty(MULE_HOME_DIRECTORY_PROPERTY, muleHome.getCanonicalPath());
     GlobalConfigLoader.reset();
 
     final File domainFolder = getDomainFolder(DEFAULT_DOMAIN_NAME);
     assertThat(domainFolder.mkdirs(), is(true));
-
-    services = getServicesFolder();
-    services.mkdirs();
-    copyDirectory(buildSchedulerServiceFile(compilerWorkFolder.newFolder(SCHEDULER_SERVICE_NAME)),
-                  new File(services, SCHEDULER_SERVICE_NAME));
-    copyDirectory(buildExpressionLanguageServiceFile(compilerWorkFolder.newFolder(EXPRESSION_LANGUAGE_SERVICE_NAME)),
-                  new File(services, EXPRESSION_LANGUAGE_SERVICE_NAME));
 
     applicationDeploymentListener = mock(DeploymentListener.class);
     testDeploymentListener = new TestDeploymentListener();
@@ -346,7 +357,8 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
       extensionModelLoaderManager.stop();
     }
 
-    deleteTree(muleHome);
+    deleteTree(appsDir);
+    deleteTree(domainsDir);
 
     // this is a complex classloader setup and we can't reproduce standalone Mule 100%,
     // so trick the next test method into thinking it's the first run, otherwise

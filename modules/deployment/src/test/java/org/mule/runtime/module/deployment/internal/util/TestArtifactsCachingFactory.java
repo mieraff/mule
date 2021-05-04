@@ -388,7 +388,7 @@ public class TestArtifactsCachingFactory {
 
     File simpleExtensionJarFile =
         new ExtensionCompiler().compiling(getResourceFile("/org/foo/simple/SimpleExtension.java"),
-                                                        getResourceFile("/org/foo/simple/SimpleOperation.java"))
+                                          getResourceFile("/org/foo/simple/SimpleOperation.java"))
             .compile("mule-module-simple-4.0-SNAPSHOT.jar", "1.0.0");
 
     jars.put("simpleExtensionJarFile", simpleExtensionJarFile);
@@ -516,8 +516,8 @@ public class TestArtifactsCachingFactory {
     }
 
     JarFileBuilder overriderLibrary = new JarFileBuilder("overrider-library",
-                                               new JarCompiler()
-                                                   .compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe.java"))
+                                                         new JarCompiler()
+                                                             .compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe.java"))
                                                              .compile("overrider-library.jar"));
 
     jarsLibs.put("overriderLibrary", overriderLibrary);
@@ -530,7 +530,8 @@ public class TestArtifactsCachingFactory {
     }
 
     JarFileBuilder overrider2Library = new JarFileBuilder("overrider2-library",
-                                                new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe2.java"))
+                                                          new JarCompiler()
+                                                              .compiling(getResourceFile("/classloading-troubleshooting/src/OverrideMe2.java"))
                                                               .compile("overrider2-library.jar"));
 
     jarsLibs.put("overrider2Library", overrider2Library);
@@ -543,7 +544,8 @@ public class TestArtifactsCachingFactory {
     }
 
     JarFileBuilder overriderTestLibrary = new JarFileBuilder("overrider-test-library",
-                                               new JarCompiler().compiling(getResourceFile("/classloading-troubleshooting/src/test/OverrideMe.java"))
+                                                             new JarCompiler()
+                                                                 .compiling(getResourceFile("/classloading-troubleshooting/src/test/OverrideMe.java"))
                                                                  .compile("overrider-test-library.jar"));
 
     jarsLibs.put("overriderTestLibrary", overriderTestLibrary);

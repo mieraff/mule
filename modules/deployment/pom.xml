@@ -17,7 +17,7 @@
     <properties>
         <formatterConfigPath>../../formatter.xml</formatterConfigPath>
 
-        <surefire.args>${surefire.args.base} -agentpath:/Applications/YourKit-Java-Profiler-2021.3.app/Contents/Resources/bin/mac/libyjpagent.dylib=disablestacktelemetry,exceptions=disable,delay=10000</surefire.args>
+<!--         <surefire.args>${surefire.args.base} -agentpath:/Applications/YourKit-Java-Profiler-2021.3.app/Contents/Resources/bin/mac/libyjpagent.dylib=disablestacktelemetry,exceptions=disable,delay=10000</surefire.args> -->
     </properties>
 
     <dependencies>

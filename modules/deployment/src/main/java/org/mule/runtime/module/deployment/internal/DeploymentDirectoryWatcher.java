@@ -6,6 +6,7 @@
  */
 package org.mule.runtime.module.deployment.internal;
 
+import static java.lang.Integer.getInteger;
 import static java.lang.String.format;
 import static java.util.Arrays.sort;
 import static java.util.Arrays.stream;
@@ -17,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.io.IOCase.INSENSITIVE;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
+import static org.mule.runtime.api.util.MuleSystemProperties.SYSTEM_PROPERTY_PREFIX;
 import static org.mule.runtime.container.api.MuleFoldersUtil.getDomainsFolder;
 import static org.mule.runtime.core.internal.logging.LogUtil.log;
 import static org.mule.runtime.core.internal.util.splash.SplashScreen.miniSplash;
@@ -81,7 +83,8 @@ public class DeploymentDirectoryWatcher implements Runnable {
    */
   public static final String DEPLOYMENT_APPLICATION_PROPERTY = "mule.deploy.applications";
 
-  protected static final int DEFAULT_CHANGES_CHECK_INTERVAL_MS = 5000;
+  protected static final int DEFAULT_CHANGES_CHECK_INTERVAL_MS =
+      getInteger(SYSTEM_PROPERTY_PREFIX + DeploymentDirectoryWatcher.class.getName() + ".defaultChangesCheckIntervalMs", 5000);
 
   protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 

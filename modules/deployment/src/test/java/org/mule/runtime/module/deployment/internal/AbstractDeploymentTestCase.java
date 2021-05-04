@@ -45,6 +45,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mule.functional.services.TestServicesUtils.buildExpressionLanguageServiceFile;
 import static org.mule.functional.services.TestServicesUtils.buildSchedulerServiceFile;
+import static org.mule.runtime.api.util.MuleSystemProperties.SYSTEM_PROPERTY_PREFIX;
 import static org.mule.runtime.container.api.MuleFoldersUtil.getDomainFolder;
 import static org.mule.runtime.container.api.MuleFoldersUtil.getServicesFolder;
 import static org.mule.runtime.core.api.config.MuleProperties.MULE_HOME_DIRECTORY_PROPERTY;
@@ -56,6 +57,7 @@ import static org.mule.runtime.deployment.model.api.application.ApplicationStatu
 import static org.mule.runtime.deployment.model.api.domain.DomainDescriptor.DEFAULT_DOMAIN_NAME;
 import static org.mule.runtime.module.deployment.internal.DefaultArchiveDeployer.JAR_FILE_SUFFIX;
 import static org.mule.runtime.module.deployment.internal.DeploymentDirectoryWatcher.CHANGE_CHECK_INTERVAL_PROPERTY;
+import static org.mule.runtime.module.deployment.internal.DeploymentDirectoryWatcher.DEFAULT_CHANGES_CHECK_INTERVAL_MS;
 import static org.mule.runtime.module.deployment.internal.MuleDeploymentService.JAR_ARTIFACT_FILTER;
 import static org.mule.runtime.module.deployment.internal.MuleDeploymentService.PARALLEL_DEPLOYMENT_PROPERTY;
 import static org.mule.runtime.module.deployment.internal.MuleDeploymentService.findSchedulerService;
@@ -136,8 +138,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
@@ -194,6 +198,11 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
   protected ModuleRepository moduleRepository;
   private TestModuleDiscoverer moduleDiscoverer;
 
+  @ClassRule
+  public static final SystemProperty checkInterval =
+      new SystemProperty(SYSTEM_PROPERTY_PREFIX + DeploymentDirectoryWatcher.class.getName() + ".defaultChangesCheckIntervalMs",
+                         "100");
+
   @Parameterized.Parameters(name = "Parallel: {0}")
   public static List<Boolean> params() {
     return asList(false, true);
@@ -212,7 +221,7 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
     writeDeclaredStaticField(TestComponentBuildingDefinitionProvider.class, "internalIsRunningTests", true, true);
   }
 
-  @BeforeClass
+  @AfterClass
   public static void afterClass() throws IllegalAccessException {
     writeDeclaredStaticField(TestComponentBuildingDefinitionProvider.class, "internalIsRunningTests", internalIsRunningTests,
                              true);
@@ -810,7 +819,7 @@ public abstract class AbstractDeploymentTestCase extends AbstractMuleTestCase {
   protected void assertNoDeploymentInvoked(final DeploymentListener deploymentListener) {
     // TODO(pablo.kraan): look for a better way to test this
     boolean invoked;
-    Prober prober = new PollingProber(DeploymentDirectoryWatcher.DEFAULT_CHANGES_CHECK_INTERVAL_MS * 2, 100);
+    Prober prober = new PollingProber(DEFAULT_CHANGES_CHECK_INTERVAL_MS * 2, 100);
     try {
       prober.check(new Probe() {
 

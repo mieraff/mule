@@ -12,6 +12,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.mule.runtime.api.component.TypedComponentIdentifier.ComponentType.OPERATION;
 import static org.mule.runtime.ast.api.ComponentAst.BODY_RAW_PARAM_NAME;
+import static org.mule.runtime.ast.api.ComponentMetadataAst.EMPTY_METADATA;
 import static org.mule.runtime.ast.api.util.MuleArtifactAstCopyUtils.copyRecursively;
 import static org.mule.runtime.internal.dsl.DslConstants.EE_NAMESPACE;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -191,6 +192,7 @@ public class StaticAstManipulator {
             // TODO generate a more meaningful location
             .withLocation(DefaultComponentLocation.from("(astManipulation)"))
             .withIdentifier(ComponentIdentifier.builder().name("transform").namespace("ee").namespaceUri(EE_NAMESPACE).build())
+            .withMetadata(EMPTY_METADATA)
     // .withComponentType(OPERATION)
     // .withExtensionModel(eeExt)
     // .withParameterizedModel(transformOperationModel)
@@ -199,16 +201,19 @@ public class StaticAstManipulator {
     setPayloadScript.ifPresent(p -> {
       eeTransformBuilder.addChildComponent()
           .withIdentifier(ComponentIdentifier.builder().name("message").namespace("ee").namespaceUri(EE_NAMESPACE).build())
+          .withMetadata(EMPTY_METADATA)
           .addChildComponent()
           .withIdentifier(ComponentIdentifier.builder().name("set-payload").namespace("ee").namespaceUri(EE_NAMESPACE)
               .build())
+          .withMetadata(EMPTY_METADATA)
           .withRawParameter(BODY_RAW_PARAM_NAME, "#[" + p + "]");
     });
 
     if (!setVariablesScripts.isEmpty()) {
       final ComponentAstBuilder variables = eeTransformBuilder.addChildComponent()
           .withIdentifier(ComponentIdentifier.builder().name("variables").namespace("ee").namespaceUri(EE_NAMESPACE)
-              .build());
+              .build())
+          .withMetadata(EMPTY_METADATA);
 
       setVariablesScripts.entrySet().forEach(entry -> {
 
@@ -216,6 +221,7 @@ public class StaticAstManipulator {
             .addChildComponent()
             .withIdentifier(ComponentIdentifier.builder().name("set-variable").namespace("ee").namespaceUri(EE_NAMESPACE)
                 .build())
+            .withMetadata(EMPTY_METADATA)
             .withRawParameter("variableName", entry.getKey())
             .withRawParameter(BODY_RAW_PARAM_NAME, "#[" + entry.getValue() + "]");
       });

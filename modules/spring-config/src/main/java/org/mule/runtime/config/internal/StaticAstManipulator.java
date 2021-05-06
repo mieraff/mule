@@ -7,28 +7,23 @@
 package org.mule.runtime.config.internal;
 
 import static java.lang.System.lineSeparator;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static org.mule.runtime.api.component.TypedComponentIdentifier.ComponentType.OPERATION;
 import static org.mule.runtime.ast.api.util.MuleArtifactAstCopyUtils.copyRecursively;
 import static org.mule.runtime.internal.dsl.DslConstants.EE_NAMESPACE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.mule.runtime.api.component.ComponentIdentifier;
-import org.mule.metadata.message.api.el.ExpressionLanguageMetadataTypeResolver;
 import org.mule.runtime.api.dsl.DslResolvingContext;
 import org.mule.runtime.api.meta.model.operation.OperationModel;
 import org.mule.runtime.api.metadata.ExpressionLanguageMetadataService;
 import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.ast.api.ComponentAst;
-import org.mule.runtime.ast.api.ComponentParameterAst;
 import org.mule.runtime.ast.api.builder.ComponentAstBuilder;
 import org.mule.runtime.ast.api.util.BaseComponentAstDecorator;
 import org.mule.runtime.ast.internal.builder.LightComponentAstBuilder;
 import org.mule.runtime.config.api.dsl.ArtifactDeclarationXmlSerializer;
 import org.mule.runtime.config.internal.ast_manipulator.InOut;
-import org.mule.runtime.config.internal.ast_manipulator.SetVariableInOutResolver;
 import org.mule.runtime.config.internal.dsl.model.XmlArtifactDeclarationLoader;
 import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
@@ -37,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -108,11 +102,11 @@ public class StaticAstManipulator {
      * // Not just a list, we need a map ComponentAst -> {inputs, outputs} final List<ComponentAst> compactableElements =
      * subFlowsInlinedAst.recursiveStream() .filter(comp -> comp.getIdentifier().getName().equals("set-variable") ||
      * comp.getIdentifier().getName().equals("set-payload"))
-     * 
+     *
      * .map(c -> { // left value is expression // c.getParameters().stream().forEach(p -> p.getValue().mapLeft(null));
-     * 
+     *
      * return c; })
-     * 
+     *
      * .collect(toList());
      */
 
@@ -132,7 +126,7 @@ public class StaticAstManipulator {
               .withParameterizedModel(transformOperationModel);
 
 
-          eeTransfromBuilder.with
+          // eeTransfromBuilder.with
         });
 
     // 5. ...
@@ -201,7 +195,7 @@ public class StaticAstManipulator {
     /*
      * final List<ComponentAst> setVariables = ast.recursiveStream() .filter(comp ->
      * SET_VARIABLE.equals(comp.getIdentifier().getName())) .collect(toList());
-     * 
+     *
      * Map<ComponentAst, InOut> outputs = setVariables.stream().collect(toMap(componentAst -> componentAst,
      * this::determinateInputOutSetVariableComponent)); return outputs;
      */

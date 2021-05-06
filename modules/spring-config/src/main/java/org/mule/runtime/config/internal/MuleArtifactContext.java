@@ -58,6 +58,7 @@ import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.ConfigurationProperties;
 import org.mule.runtime.api.config.FeatureFlaggingService;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
+import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.exception.MuleRuntimeException;
 import org.mule.runtime.api.ioc.ConfigurableObjectProvider;
 import org.mule.runtime.api.ioc.ObjectProvider;
@@ -233,7 +234,15 @@ public class MuleArtifactContext extends AbstractRefreshableConfigApplicationCon
 
     muleContext.getCustomizationService().overrideDefaultServiceImpl(FEATURE_FLAGGING_SERVICE_KEY, featureFlaggingService);
 
-    this.applicationModel = createApplicationModel(artifactDeclaration, artifactConfigResources, featureFlaggingService);
+    final StaticAstManipulator staticAstManipulator = new StaticAstManipulator();
+    try {
+      muleContext.getInjector().inject(staticAstManipulator);
+    } catch (MuleException e) {
+      throw new MuleRuntimeException(e);
+    }
+
+    this.applicationModel =
+        createApplicationModel(artifactDeclaration, artifactConfigResources, staticAstManipulator, featureFlaggingService);
     registerErrors(applicationModel);
   }
 
@@ -252,9 +261,10 @@ public class MuleArtifactContext extends AbstractRefreshableConfigApplicationCon
 
   private ApplicationModel createApplicationModel(ArtifactDeclaration artifactDeclaration,
                                                   ConfigResource[] artifactConfigResources,
+                                                  StaticAstManipulator staticAstManipulator,
                                                   FeatureFlaggingService featureFlaggingService) {
     try {
-      final ArtifactAst artifactAst;
+      ArtifactAst artifactAst;
 
       if (artifactDeclaration == null) {
         if (artifactConfigResources.length == 0) {
@@ -350,7 +360,7 @@ public class MuleArtifactContext extends AbstractRefreshableConfigApplicationCon
               .collect(toList()));
         }
       } else {
-        artifactAst = toArtifactast(artifactDeclaration, getExtensions());
+        artifactAst = staticAstManipulator.optimizeStaticAst(toArtifactast(artifactDeclaration, getExtensions()));
       }
 
       final ApplicationModel applicationModel = new ApplicationModel(artifactAst,

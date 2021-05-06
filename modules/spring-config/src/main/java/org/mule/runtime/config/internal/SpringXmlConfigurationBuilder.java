@@ -157,10 +157,10 @@ public class SpringXmlConfigurationBuilder extends AbstractResourceConfiguration
       applicationObjectcontroller = new CompositeOptionalObjectsController(applicationObjectcontroller, parentObjectController);
     }
 
+    serviceConfigurators.forEach(serviceConfigurator -> serviceConfigurator.configure(muleContext.getCustomizationService()));
     // TODO MULE-10084 : Refactor to only accept artifactConfiguration and not artifactConfigResources
     final MuleArtifactContext muleArtifactContext =
         doCreateApplicationContext(muleContext, artifactDeclaration, applicationObjectcontroller);
-    serviceConfigurators.forEach(serviceConfigurator -> serviceConfigurator.configure(muleContext.getCustomizationService()));
     return muleArtifactContext;
   }
 

@@ -58,13 +58,13 @@ import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.ConfigurationProperties;
 import org.mule.runtime.api.config.FeatureFlaggingService;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
-import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.exception.MuleRuntimeException;
 import org.mule.runtime.api.ioc.ConfigurableObjectProvider;
 import org.mule.runtime.api.ioc.ObjectProvider;
 import org.mule.runtime.api.meta.model.ExtensionModel;
 import org.mule.runtime.api.meta.model.config.ConfigurationModel;
 import org.mule.runtime.api.meta.model.stereotype.HasStereotypeModel;
+import org.mule.runtime.api.metadata.ExpressionLanguageMetadataService;
 import org.mule.runtime.api.util.Pair;
 import org.mule.runtime.app.declaration.api.ArtifactDeclaration;
 import org.mule.runtime.ast.api.ArtifactAst;
@@ -97,6 +97,7 @@ import org.mule.runtime.core.api.extension.ExtensionManager;
 import org.mule.runtime.core.api.transaction.TransactionManagerFactory;
 import org.mule.runtime.core.api.transformer.Converter;
 import org.mule.runtime.core.api.util.IOUtils;
+import org.mule.runtime.core.internal.config.DefaultCustomizationService;
 import org.mule.runtime.core.internal.config.FeatureFlaggingServiceBuilder;
 import org.mule.runtime.core.internal.context.MuleContextWithRegistry;
 import org.mule.runtime.core.internal.exception.ContributedErrorTypeLocator;
@@ -234,12 +235,18 @@ public class MuleArtifactContext extends AbstractRefreshableConfigApplicationCon
 
     muleContext.getCustomizationService().overrideDefaultServiceImpl(FEATURE_FLAGGING_SERVICE_KEY, featureFlaggingService);
 
-    final StaticAstManipulator staticAstManipulator = new StaticAstManipulator();
-    try {
-      muleContext.getInjector().inject(staticAstManipulator);
-    } catch (MuleException e) {
-      throw new MuleRuntimeException(e);
-    }
+    // TODO Need to split the spring registry in 2: one with everything that is common for every artifact (one for every artifact
+    // still, being independent) and another for all things specific of the artifact. This is needed so that the muleContext and
+    // utilities there can be used when processing the ast for creating the app context.
+    final StaticAstManipulator staticAstManipulator =
+        new StaticAstManipulator((ExpressionLanguageMetadataService) ((DefaultCustomizationService) (muleContext
+            .getCustomizationService())).getCustomServices().get("DataWeave service - ExpressionLanguageMetadataService")
+                .getServiceImpl().get());
+    // try {
+    // muleContext.getInjector().inject(staticAstManipulator);
+    // } catch (MuleException e) {
+    // throw new MuleRuntimeException(e);
+    // }
 
     this.applicationModel =
         createApplicationModel(artifactDeclaration, artifactConfigResources, staticAstManipulator, featureFlaggingService);

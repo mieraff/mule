@@ -10,20 +10,27 @@ import static java.lang.System.lineSeparator;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.mule.runtime.api.component.TypedComponentIdentifier.ComponentType.OPERATION;
 import static org.mule.runtime.ast.api.util.MuleArtifactAstCopyUtils.copyRecursively;
+import static org.mule.runtime.internal.dsl.DslConstants.EE_NAMESPACE;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.metadata.message.api.el.ExpressionLanguageMetadataTypeResolver;
 import org.mule.runtime.api.dsl.DslResolvingContext;
+import org.mule.runtime.api.meta.model.operation.OperationModel;
 import org.mule.runtime.api.metadata.ExpressionLanguageMetadataService;
 import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.ast.api.ComponentAst;
 import org.mule.runtime.ast.api.ComponentParameterAst;
+import org.mule.runtime.ast.api.builder.ComponentAstBuilder;
 import org.mule.runtime.ast.api.util.BaseComponentAstDecorator;
+import org.mule.runtime.ast.internal.builder.LightComponentAstBuilder;
 import org.mule.runtime.config.api.dsl.ArtifactDeclarationXmlSerializer;
 import org.mule.runtime.config.internal.ast_manipulator.InOut;
 import org.mule.runtime.config.internal.ast_manipulator.SetVariableInOutResolver;
 import org.mule.runtime.config.internal.dsl.model.XmlArtifactDeclarationLoader;
+import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,9 +95,14 @@ public class StaticAstManipulator {
       };
     });
 
+    // 2. Determine segments (rodro)
+    List<List<ComponentAst>> segments = subFlowsInlinedAst.recursiveStream()
+        .flatMap(comp -> determineSegments(comp).stream())
+        .collect(toList());
+    LOGGER.error("Found segments: " + segments);
 
 
-    // 2. get the inputs/output of every processor (lisch)
+    // 3. get the inputs/output of every processor (lisch)
     Map<ComponentAst, InOut> componentAstInOutMap = determinateInputOutput(subFlowsInlinedAst);
     /*
      * // Not just a list, we need a map ComponentAst -> {inputs, outputs} final List<ComponentAst> compactableElements =
@@ -103,11 +115,27 @@ public class StaticAstManipulator {
      * 
      * .collect(toList());
      */
-    // 3a. Determine segments (rodro)
 
-    // List<List<ComponentAst>> compactableElementsSegments = singletonList(compactableElements);
-    // 3b. create a dependency graph for every flow segment based on the inputs/outputs (rodro)
-    // 4. ...
+    // 4. create a dependency graph for every segment based on the inputs/outputs (rodro)
+
+
+    ast.dependencies().stream().filter(extModel -> extModel.getName().equals("ee")).findAny()
+        .ifPresent(eeExt -> {
+          final OperationModel transformOperationModel = eeExt.getOperationModel("transform").get();
+
+          final ComponentAstBuilder eeTransfromBuilder = new LightComponentAstBuilder()
+              // TODO generate a more meaningful location
+              .withLocation(DefaultComponentLocation.from("(astManipulation)"))
+              .withIdentifier(ComponentIdentifier.builder().name("transform").namespace("ee").namespaceUri(EE_NAMESPACE).build())
+              .withComponentType(OPERATION)
+              .withExtensionModel(eeExt)
+              .withParameterizedModel(transformOperationModel);
+
+
+          eeTransfromBuilder.with
+        });
+
+    // 5. ...
 
     // x. generate and log the modified xml for reference. (rodro)
 
@@ -117,6 +145,37 @@ public class StaticAstManipulator {
             .serialize(XmlArtifactDeclarationLoader.getDefault(dslContext).load(subFlowsInlinedAst)));
 
     return subFlowsInlinedAst;
+  }
+
+  protected List<List<ComponentAst>> determineSegments(ComponentAst comp) {
+    List<List<ComponentAst>> foundSegments = new ArrayList<>();
+    List<ComponentAst> currentSegment = new ArrayList<>();
+
+    for (ComponentAst child : comp.directChildrenStream().collect(toList())) {
+      if (child.getComponentType().equals(OPERATION)) {
+        currentSegment.add(child);
+      }
+
+      // do a control break on anything that is not an operation to determine the boundaries of each segment.
+      if (!child.getComponentType().equals(OPERATION)) {
+        // a segments ends here
+        if (!currentSegment.isEmpty()) {
+          foundSegments.add(currentSegment);
+          currentSegment = new ArrayList<>();
+        }
+
+        // do a recursion to determine segments in nested scopes/routers.
+        foundSegments.addAll(determineSegments(child));
+      }
+    }
+
+    // store the data for the last segment
+    if (!currentSegment.isEmpty()) {
+      foundSegments.add(currentSegment);
+      currentSegment = new ArrayList<>();
+    }
+
+    return foundSegments;
   }
 
   protected boolean isStaticSubFlowReference(ArtifactAst ast, ComponentAst child) {

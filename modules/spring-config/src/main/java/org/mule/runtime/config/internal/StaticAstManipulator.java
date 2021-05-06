@@ -7,21 +7,26 @@
 package org.mule.runtime.config.internal;
 
 import static java.lang.System.lineSeparator;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.mule.runtime.api.component.TypedComponentIdentifier.ComponentType.OPERATION;
+import static org.mule.runtime.ast.api.ComponentAst.BODY_RAW_PARAM_NAME;
 import static org.mule.runtime.ast.api.util.MuleArtifactAstCopyUtils.copyRecursively;
 import static org.mule.runtime.internal.dsl.DslConstants.EE_NAMESPACE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.dsl.DslResolvingContext;
-import org.mule.runtime.api.meta.model.operation.OperationModel;
 import org.mule.runtime.api.metadata.ExpressionLanguageMetadataService;
 import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.ast.api.ComponentAst;
 import org.mule.runtime.ast.api.builder.ComponentAstBuilder;
 import org.mule.runtime.ast.api.util.BaseComponentAstDecorator;
-import org.mule.runtime.ast.internal.builder.LightComponentAstBuilder;
+import org.mule.runtime.ast.internal.builder.ApplicationModelTypeUtils;
+import org.mule.runtime.ast.internal.builder.DefaultComponentAstBuilder;
+import org.mule.runtime.ast.internal.builder.PropertiesResolver;
+import org.mule.runtime.ast.internal.model.ExtensionModelHelper;
 import org.mule.runtime.config.api.dsl.ArtifactDeclarationXmlSerializer;
 import org.mule.runtime.config.internal.ast_manipulator.InOut;
 import org.mule.runtime.config.internal.dsl.model.XmlArtifactDeclarationLoader;
@@ -29,9 +34,11 @@ import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -112,22 +119,51 @@ public class StaticAstManipulator {
 
     // 4. create a dependency graph for every segment based on the inputs/outputs (rodro)
 
+    ArtifactAst eeTransfromCompactedAst = copyRecursively(subFlowsInlinedAst, comp -> {
+      final Optional<List<ComponentAst>> componentSegment =
+          comp.directChildrenStream().findFirst().flatMap(f -> segments.stream().filter(s -> s.contains(f)).findAny());
 
-    ast.dependencies().stream().filter(extModel -> extModel.getName().equals("ee")).findAny()
-        .ifPresent(eeExt -> {
-          final OperationModel transformOperationModel = eeExt.getOperationModel("transform").get();
+      return componentSegment.map(segment -> {
 
-          final ComponentAstBuilder eeTransfromBuilder = new LightComponentAstBuilder()
-              // TODO generate a more meaningful location
-              .withLocation(DefaultComponentLocation.from("(astManipulation)"))
-              .withIdentifier(ComponentIdentifier.builder().name("transform").namespace("ee").namespaceUri(EE_NAMESPACE).build())
-              .withComponentType(OPERATION)
-              .withExtensionModel(eeExt)
-              .withParameterizedModel(transformOperationModel);
+        List<ComponentAst> compactables = new ArrayList<>();
 
+        for (ComponentAst item : segment) {
+          if ((item.getIdentifier().getName().equals("set-variable") || item.getIdentifier().getName().equals("c"))
+              // TODO use some graph structure so in can compact even it it is using inputs from previous segments.
+              && componentAstInOutMap.containsKey(item) && componentAstInOutMap.get(item).getIn().isEmpty()) {
+            compactables.add(item);
+          }
+        }
 
-          // eeTransfromBuilder.with
-        });
+        if (compactables.isEmpty()) {
+          return comp;
+        } else {
+          Optional<String> setPayloadScript = Optional.empty();
+          Map<String, String> setVariablesScripts = new LinkedHashMap<>();
+
+          for (ComponentAst c : compactables) {
+            if (c.getIdentifier().getName().equals("set-variable")) {
+              setVariablesScripts.put((String) c.getParameter("variableName").getValue().getRight(),
+                                      (String) c.getParameter("value").getValue().mapRight(v -> "'" + v + "'").getValue().get());
+            } else if (c.getIdentifier().getName().equals("set-payload")) {
+              setPayloadScript = c.getParameter("value").getValue().mapRight(v -> "'" + v + "'").getValue();
+            }
+          }
+
+          final ComponentAst eeTransform = createEeTransform(subFlowsInlinedAst, setPayloadScript, setVariablesScripts);
+
+          return (ComponentAst) new BaseComponentAstDecorator(comp) {
+
+            @Override
+            public Stream<ComponentAst> directChildrenStream() {
+              return Stream.concat(Stream.of(eeTransform),
+                                   super.directChildrenStream().filter(c -> !compactables.contains(c)));
+            }
+          };
+        }
+      })
+          .orElse(comp);
+    });
 
     // 5. ...
 
@@ -136,9 +172,70 @@ public class StaticAstManipulator {
     DslResolvingContext dslContext = DslResolvingContext.getDefault(ast.dependencies());
     LOGGER.error("Manipulated app:" + lineSeparator()
         + ArtifactDeclarationXmlSerializer.getDefault(dslContext)
-            .serialize(XmlArtifactDeclarationLoader.getDefault(dslContext).load(subFlowsInlinedAst)));
+            .serialize(XmlArtifactDeclarationLoader.getDefault(dslContext).load(eeTransfromCompactedAst)));
 
-    return subFlowsInlinedAst;
+    return eeTransfromCompactedAst;
+  }
+
+  protected ComponentAst createEeTransform(ArtifactAst ast,
+                                           Optional<String> setPayloadScript,
+                                           Map<String, String> setVariablesScripts) {
+    final ExtensionModelHelper extModelHelper = new ExtensionModelHelper(ast.dependencies());
+    // ast.dependencies().stream().filter(extModel -> extModel.getName().equals("ee")).findAny()
+    // .ifPresent(eeExt -> {
+    // final OperationModel transformOperationModel = eeExt.getOperationModel("transform").get();
+
+    // TODO what happens with the attributes?
+    final DefaultComponentAstBuilder eeTransformBuilder =
+        (DefaultComponentAstBuilder) new DefaultComponentAstBuilder(new PropertiesResolver(), extModelHelper, emptyList())
+            // TODO generate a more meaningful location
+            .withLocation(DefaultComponentLocation.from("(astManipulation)"))
+            .withIdentifier(ComponentIdentifier.builder().name("transform").namespace("ee").namespaceUri(EE_NAMESPACE).build())
+    // .withComponentType(OPERATION)
+    // .withExtensionModel(eeExt)
+    // .withParameterizedModel(transformOperationModel)
+    ;
+
+    setPayloadScript.ifPresent(p -> {
+      eeTransformBuilder.addChildComponent()
+          .withIdentifier(ComponentIdentifier.builder().name("message").namespace("ee").namespaceUri(EE_NAMESPACE).build())
+          .addChildComponent()
+          .withIdentifier(ComponentIdentifier.builder().name("set-payload").namespace("ee").namespaceUri(EE_NAMESPACE)
+              .build())
+          .withRawParameter(BODY_RAW_PARAM_NAME, "#[" + p + "]");
+    });
+
+    if (!setVariablesScripts.isEmpty()) {
+      final ComponentAstBuilder variables = eeTransformBuilder.addChildComponent()
+          .withIdentifier(ComponentIdentifier.builder().name("variables").namespace("ee").namespaceUri(EE_NAMESPACE)
+              .build());
+
+      setVariablesScripts.entrySet().forEach(entry -> {
+
+        variables
+            .addChildComponent()
+            .withIdentifier(ComponentIdentifier.builder().name("set-variable").namespace("ee").namespaceUri(EE_NAMESPACE)
+                .build())
+            .withRawParameter("variableName", entry.getKey())
+            .withRawParameter(BODY_RAW_PARAM_NAME, "#[" + entry.getValue() + "]");
+      });
+
+    }
+
+    ApplicationModelTypeUtils.resolveTypedComponentIdentifier(eeTransformBuilder, false, extModelHelper);
+
+    return eeTransformBuilder.build();
+    // .withParameter(setPayloadParam, new DefaultComponentParameterAst(new LightComponentAstBuilder()
+    // .withIdentifier(ComponentIdentifier.builder().name("set-payload").namespace("ee").namespaceUri(EE_NAMESPACE)
+    // .build())
+    // .withRawParameter(ComponentAst.BODY_RAW_PARAM_NAME, ""), setPayloadParam, null, null, null))
+    // .withParameter(variablesParam, new DefaultComponentParameterAst(new LightComponentAstBuilder()
+    // .withIdentifier(ComponentIdentifier.builder().name("transform").namespace("ee").namespaceUri(EE_NAMESPACE)
+    // .build()), variablesParam, null, null, null));
+
+
+    // eeTransfromBuilder.with
+    // });
   }
 
   protected List<List<ComponentAst>> determineSegments(ComponentAst comp) {
@@ -191,7 +288,17 @@ public class StaticAstManipulator {
   }
 
   private Map<ComponentAst, InOut> determinateInputOutput(ArtifactAst ast) {
-    return new HashMap<>();
+
+
+    final List<ComponentAst> flowComponents =
+        ast.topLevelComponentsStream().findFirst().get().directChildrenStream().collect(Collectors.toList());
+    final Map<ComponentAst, InOut> inOuts = new HashMap<>();
+
+    inOuts.put(flowComponents.get(0), new InOut(emptyList(), "vars.non_expression_var"));
+    inOuts.put(flowComponents.get(1), new InOut(emptyList(), "vars.expression_var"));
+    inOuts.put(flowComponents.get(2), new InOut(asList("vars.non_expression_var", "vars.expression_var"), "payload"));
+
+    return inOuts;
     /*
      * final List<ComponentAst> setVariables = ast.recursiveStream() .filter(comp ->
      * SET_VARIABLE.equals(comp.getIdentifier().getName())) .collect(toList());

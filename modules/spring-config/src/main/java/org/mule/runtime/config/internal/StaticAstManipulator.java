@@ -35,6 +35,14 @@ public class StaticAstManipulator {
     final List<ComponentAst> compactableElements = ast.recursiveStream()
         .filter(comp -> comp.getIdentifier().getName().equals("set-variable")
             || comp.getIdentifier().getName().equals("set-payload"))
+
+        .map(c -> {
+          // left value is expression
+          c.getParameters().stream().forEach(p -> p.getValue().mapLeft(null));
+
+          return c;
+        })
+
         .collect(toList());
 
     // 3a. Determine segments (rodro)

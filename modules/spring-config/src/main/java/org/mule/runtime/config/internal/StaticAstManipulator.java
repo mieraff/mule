@@ -14,6 +14,7 @@ import static org.mule.runtime.ast.api.ComponentAst.BODY_RAW_PARAM_NAME;
 import static org.mule.runtime.ast.api.ComponentMetadataAst.EMPTY_METADATA;
 import static org.mule.runtime.ast.api.util.MuleArtifactAstCopyUtils.copyRecursively;
 import static org.mule.runtime.internal.dsl.DslConstants.EE_NAMESPACE;
+import static org.mule.runtime.internal.dsl.DslConstants.EE_PREFIX;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.mule.runtime.api.component.ComponentIdentifier;
@@ -125,7 +126,7 @@ public class StaticAstManipulator {
         List<ComponentAst> compactables = new ArrayList<>();
 
         for (ComponentAst item : segment) {
-          if ((item.getIdentifier().getName().equals("set-variable") || item.getIdentifier().getName().equals("c"))
+          if ((item.getIdentifier().getName().equals(SET_VARIABLE) || item.getIdentifier().getName().equals(SET_PAYLOAD))
               // TODO use some graph structure so in can compact even it it is using inputs from previous segments.
               && componentAstInOutMap.containsKey(item) && componentAstInOutMap.get(item).getIn().isEmpty()) {
             compactables.add(item);
@@ -139,10 +140,10 @@ public class StaticAstManipulator {
           Map<String, String> setVariablesScripts = new LinkedHashMap<>();
 
           for (ComponentAst c : compactables) {
-            if (c.getIdentifier().getName().equals("set-variable")) {
+            if (c.getIdentifier().getName().equals(SET_VARIABLE)) {
               setVariablesScripts.put((String) c.getParameter("variableName").getValue().getRight(),
                                       (String) c.getParameter("value").getValue().mapRight(v -> "'" + v + "'").getValue().get());
-            } else if (c.getIdentifier().getName().equals("set-payload")) {
+            } else if (c.getIdentifier().getName().equals(SET_PAYLOAD)) {
               setPayloadScript = c.getParameter("value").getValue().mapRight(v -> "'" + v + "'").getValue();
             }
           }
@@ -196,10 +197,10 @@ public class StaticAstManipulator {
 
     setPayloadScript.ifPresent(p -> {
       eeTransformBuilder.addChildComponent()
-          .withIdentifier(ComponentIdentifier.builder().name("message").namespace("ee").namespaceUri(EE_NAMESPACE).build())
+          .withIdentifier(ComponentIdentifier.builder().name("message").namespace(EE_PREFIX).namespaceUri(EE_NAMESPACE).build())
           .withMetadata(EMPTY_METADATA)
           .addChildComponent()
-          .withIdentifier(ComponentIdentifier.builder().name("set-payload").namespace("ee").namespaceUri(EE_NAMESPACE)
+          .withIdentifier(ComponentIdentifier.builder().name(SET_PAYLOAD).namespace(EE_PREFIX).namespaceUri(EE_NAMESPACE)
               .build())
           .withMetadata(EMPTY_METADATA)
           .withRawParameter(BODY_RAW_PARAM_NAME, "#[" + p + "]");
@@ -207,7 +208,7 @@ public class StaticAstManipulator {
 
     if (!setVariablesScripts.isEmpty()) {
       final ComponentAstBuilder variables = eeTransformBuilder.addChildComponent()
-          .withIdentifier(ComponentIdentifier.builder().name("variables").namespace("ee").namespaceUri(EE_NAMESPACE)
+          .withIdentifier(ComponentIdentifier.builder().name("variables").namespace(EE_PREFIX).namespaceUri(EE_NAMESPACE)
               .build())
           .withMetadata(EMPTY_METADATA);
 
@@ -215,7 +216,7 @@ public class StaticAstManipulator {
 
         variables
             .addChildComponent()
-            .withIdentifier(ComponentIdentifier.builder().name("set-variable").namespace("ee").namespaceUri(EE_NAMESPACE)
+            .withIdentifier(ComponentIdentifier.builder().name(SET_VARIABLE).namespace(EE_PREFIX).namespaceUri(EE_NAMESPACE)
                 .build())
             .withMetadata(EMPTY_METADATA)
             .withRawParameter("variableName", entry.getKey())

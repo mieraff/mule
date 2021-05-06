@@ -238,10 +238,13 @@ public class MuleArtifactContext extends AbstractRefreshableConfigApplicationCon
     // TODO Need to split the spring registry in 2: one with everything that is common for every artifact (one for every artifact
     // still, being independent) and another for all things specific of the artifact. This is needed so that the muleContext and
     // utilities there can be used when processing the ast for creating the app context.
-    final StaticAstManipulator staticAstManipulator =
-        new StaticAstManipulator((ExpressionLanguageMetadataService) ((DefaultCustomizationService) (muleContext
-            .getCustomizationService())).getCustomServices().get("DataWeave service - ExpressionLanguageMetadataService")
-                .getServiceImpl().get());
+    /*
+     * final StaticAstManipulator staticAstManipulator = new StaticAstManipulator((ExpressionLanguageMetadataService)
+     * ((DefaultCustomizationService) (muleContext
+     * .getCustomizationService())).getCustomServices().get("DataWeave service - ExpressionLanguageMetadataService")
+     * .getServiceImpl().get());
+     */
+    final StaticAstManipulator staticAstManipulator = new StaticAstManipulator();
     // try {
     // muleContext.getInjector().inject(staticAstManipulator);
     // } catch (MuleException e) {

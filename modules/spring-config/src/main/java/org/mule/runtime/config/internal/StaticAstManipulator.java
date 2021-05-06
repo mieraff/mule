@@ -7,7 +7,6 @@
 package org.mule.runtime.config.internal;
 
 import static java.lang.System.lineSeparator;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.mule.runtime.api.component.TypedComponentIdentifier.ComponentType.OPERATION;
@@ -19,7 +18,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.dsl.DslResolvingContext;
-import org.mule.runtime.api.metadata.ExpressionLanguageMetadataService;
 import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.ast.api.ComponentAst;
 import org.mule.runtime.ast.api.builder.ComponentAstBuilder;
@@ -30,6 +28,7 @@ import org.mule.runtime.ast.internal.builder.PropertiesResolver;
 import org.mule.runtime.ast.internal.model.ExtensionModelHelper;
 import org.mule.runtime.config.api.dsl.ArtifactDeclarationXmlSerializer;
 import org.mule.runtime.config.internal.ast_manipulator.InOut;
+import org.mule.runtime.config.internal.ast_manipulator.ProcessorInOutResolver;
 import org.mule.runtime.config.internal.dsl.model.XmlArtifactDeclarationLoader;
 import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
@@ -39,7 +38,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -51,12 +49,10 @@ public class StaticAstManipulator {
   private static final String SET_VARIABLE = "set-variable";
   private static final String SET_PAYLOAD = "set-payload";
 
-  // @Inject
-  // TODO Inject this
-  private final ExpressionLanguageMetadataService dwMetadata;
+  private final ProcessorInOutResolver processorInOutResolver;
 
-  public StaticAstManipulator(ExpressionLanguageMetadataService dwMetadata) {
-    this.dwMetadata = dwMetadata;
+  public StaticAstManipulator() {
+    this.processorInOutResolver = new ProcessorInOutResolver();
   }
 
   public ArtifactAst optimizeStaticAst(ArtifactAst ast) {
@@ -105,7 +101,7 @@ public class StaticAstManipulator {
 
 
     // 3. get the inputs/output of every processor (lisch)
-    Map<ComponentAst, InOut> componentAstInOutMap = determinateInputOutput(subFlowsInlinedAst);
+    Map<ComponentAst, InOut> componentAstInOutMap = resolveInOut(subFlowsInlinedAst);
     /*
      * // Not just a list, we need a map ComponentAst -> {inputs, outputs} final List<ComponentAst> compactableElements =
      * subFlowsInlinedAst.recursiveStream() .filter(comp -> comp.getIdentifier().getName().equals("set-variable") ||
@@ -293,28 +289,17 @@ public class StaticAstManipulator {
     return false;
   }
 
-  private Map<ComponentAst, InOut> determinateInputOutput(ArtifactAst ast) {
-
-
-    final List<ComponentAst> flowComponents =
-        ast.topLevelComponentsStream().findFirst().get().directChildrenStream().collect(Collectors.toList());
-    final Map<ComponentAst, InOut> inOuts = new HashMap<>();
-
-    inOuts.put(flowComponents.get(0), new InOut(emptyList(), "vars.non_expression_var"));
-    inOuts.put(flowComponents.get(1), new InOut(emptyList(), "vars.expression_var"));
-    inOuts.put(flowComponents.get(2), new InOut(asList("vars.non_expression_var", "vars.expression_var"), "payload"));
-
-    return inOuts;
-    /*
-     * final List<ComponentAst> setVariables = ast.recursiveStream() .filter(comp ->
-     * SET_VARIABLE.equals(comp.getIdentifier().getName())) .collect(toList());
-     *
-     * Map<ComponentAst, InOut> outputs = setVariables.stream().collect(toMap(componentAst -> componentAst,
-     * this::determinateInputOutSetVariableComponent)); return outputs;
-     */
+  private Map<ComponentAst, InOut> resolveInOut(ArtifactAst ast) {
+    final List<ComponentAst> setVariables = ast.recursiveStream()
+        .filter(comp -> SET_VARIABLE.equals(comp.getIdentifier().getName()) || SET_PAYLOAD.equals(comp.getIdentifier().getName()))
+        .collect(toList());
+    Map<ComponentAst, InOut> outputs = new HashMap<>();
+    setVariables.forEach(c -> {
+      InOut inout = processorInOutResolver.resolve(c);
+      if (inout != null) {
+        outputs.putIfAbsent(c, inout);
+      }
+    });
+    return outputs;
   }
-  /*
-   * private InOut determinateInputOutSetVariableComponent(ComponentAst componentAst) { InOut inOut = new
-   * SetVariableInOutResolver(this.dwMetadata).resolve(componentAst); return inOut; }
-   */
 }

@@ -12,18 +12,19 @@ import org.mule.runtime.config.internal.ast_manipulator.expression_language.Expr
 
 import java.util.List;
 
-public class SetVariableInOutResolver implements InOutResolver {
+public class SetPayloadInOutResolver implements InOutResolver {
 
   private static final String VARS = "vars";
   private static final String VALUE_PARAM = "value";
-  private static final String VARIABLE_NAME_PARAM = "variableName";
+  private static final String PAYLOAD = "payload";
 
   private final ExpressionLanguageAstService expressionLanguageAstService;
 
-  public SetVariableInOutResolver(ExpressionLanguageAstService expressionLanguageAstService) {
+  public SetPayloadInOutResolver(ExpressionLanguageAstService expressionLanguageAstService) {
     this.expressionLanguageAstService = expressionLanguageAstService;
   }
 
+  @Override
   public InOut resolve(ComponentAst componentAst) {
     InOut.Builder builder = new InOut.Builder();
     ComponentParameterAst parameterAst =
@@ -36,13 +37,7 @@ public class SetVariableInOutResolver implements InOutResolver {
       inputs.forEach(input -> builder.withIn(VARS + "." + input));
     }
     // variable name output
-    builder.withOut(VARS + "." + resolverVariableName(componentAst));
+    builder.withOut(PAYLOAD);
     return builder.build();
-  }
-
-  private String resolverVariableName(ComponentAst componentAst) {
-    ComponentParameterAst parameterAst =
-        componentAst.getParameters().stream().filter(p -> VARIABLE_NAME_PARAM.equals(p.getModel().getName())).findAny().get();
-    return parameterAst.getRawValue();
   }
 }

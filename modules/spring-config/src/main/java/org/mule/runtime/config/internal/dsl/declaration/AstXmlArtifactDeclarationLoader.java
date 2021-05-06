@@ -187,7 +187,7 @@ public class AstXmlArtifactDeclarationLoader implements XmlArtifactDeclarationLo
 
   @Override
   public ArtifactDeclaration load(String name, InputStream configResource) {
-    return declareArtifact(loadArtifactAst(name, configResource));
+    return load(loadArtifactAst(name, configResource));
   }
 
   private ArtifactAst loadArtifactAst(String name, InputStream resource) {
@@ -206,7 +206,7 @@ public class AstXmlArtifactDeclarationLoader implements XmlArtifactDeclarationLo
     return namespaceInfoProvidersBuilder.build();
   }
 
-  private ArtifactDeclaration declareArtifact(ArtifactAst artifact) {
+  public ArtifactDeclaration load(ArtifactAst artifact) {
     ArtifactDeclarer artifactDeclarer = ElementDeclarer.newArtifact();
 
     StringBuilder schemaLocations = new StringBuilder();

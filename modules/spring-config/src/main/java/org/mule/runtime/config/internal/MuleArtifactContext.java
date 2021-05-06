@@ -367,10 +367,10 @@ public class MuleArtifactContext extends AbstractRefreshableConfigApplicationCon
               .collect(toList()));
         }
       } else {
-        artifactAst = staticAstManipulator.optimizeStaticAst(toArtifactast(artifactDeclaration, getExtensions()));
+        artifactAst = toArtifactast(artifactDeclaration, getExtensions());
       }
 
-      final ApplicationModel applicationModel = new ApplicationModel(artifactAst,
+      final ApplicationModel applicationModel = new ApplicationModel(staticAstManipulator.optimizeStaticAst(artifactAst),
                                                                      artifactProperties, parentConfigurationProperties,
                                                                      new ClassLoaderResourceProvider(muleContext
                                                                          .getExecutionClassLoader()),

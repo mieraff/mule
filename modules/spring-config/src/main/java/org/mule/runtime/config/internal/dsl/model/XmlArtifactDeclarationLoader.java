@@ -13,6 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.mule.runtime.api.dsl.DslResolvingContext;
 import org.mule.runtime.api.meta.model.ExtensionModel;
 import org.mule.runtime.app.declaration.api.ArtifactDeclaration;
+import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.config.internal.dsl.declaration.AstXmlArtifactDeclarationLoader;
 
 import java.io.InputStream;
@@ -93,4 +94,5 @@ public interface XmlArtifactDeclarationLoader {
    */
   ArtifactDeclaration load(String name, InputStream configResource);
 
+  ArtifactDeclaration load(ArtifactAst artifact);
 }

@@ -6,6 +6,7 @@
  */
 package org.mule.runtime.config.internal;
 
+import static java.lang.System.lineSeparator;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.mule.runtime.ast.api.util.MuleArtifactAstCopyUtils.copyRecursively;
@@ -17,6 +18,7 @@ import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.ast.api.ComponentAst;
 import org.mule.runtime.ast.api.util.BaseComponentAstDecorator;
 import org.mule.runtime.config.api.dsl.ArtifactDeclarationXmlSerializer;
+import org.mule.runtime.config.internal.dsl.model.XmlArtifactDeclarationLoader;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +87,7 @@ public class StaticAstManipulator {
 
         .map(c -> {
           // left value is expression
-          c.getParameters().stream().forEach(p -> p.getValue().mapLeft(null));
+          // c.getParameters().stream().forEach(p -> p.getValue().mapLeft(null));
 
           return c;
         })
@@ -101,8 +103,9 @@ public class StaticAstManipulator {
     // x. generate and log the modified xml for reference. (rodro)
 
     DslResolvingContext dslContext = DslResolvingContext.getDefault(ast.dependencies());
-    ArtifactDeclarationXmlSerializer serializer = ArtifactDeclarationXmlSerializer.getDefault(dslContext);
-    serializer.serialize(null);
+    LOGGER.error("Manipulated app:" + lineSeparator()
+        + ArtifactDeclarationXmlSerializer.getDefault(dslContext)
+            .serialize(XmlArtifactDeclarationLoader.getDefault(dslContext).load(subFlowsInlinedAst)));
 
     return subFlowsInlinedAst;
   }

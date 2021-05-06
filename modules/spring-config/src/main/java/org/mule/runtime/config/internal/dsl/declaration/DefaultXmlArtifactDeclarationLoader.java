@@ -111,6 +111,7 @@ import org.mule.runtime.app.declaration.api.fluent.ParameterizedElementDeclarer;
 import org.mule.runtime.app.declaration.api.fluent.RouteElementDeclarer;
 import org.mule.runtime.app.declaration.api.fluent.SimpleValueType;
 import org.mule.runtime.app.declaration.api.fluent.TopLevelParameterDeclarer;
+import org.mule.runtime.ast.api.ArtifactAst;
 import org.mule.runtime.config.api.dsl.processor.xml.XmlApplicationServiceRegistry;
 import org.mule.runtime.config.internal.dsl.model.XmlArtifactDeclarationLoader;
 import org.mule.runtime.core.api.registry.SpiServiceRegistry;
@@ -1125,5 +1126,10 @@ public class DefaultXmlArtifactDeclarationLoader implements XmlArtifactDeclarati
     } else {
       return STRING;
     }
+  }
+
+  @Override
+  public ArtifactDeclaration load(ArtifactAst artifact) {
+    throw new UnsupportedOperationException();
   }
 }

@@ -9,8 +9,13 @@ package org.mule.runtime.core.internal.processor.strategy;
 import static org.mule.runtime.core.api.construct.BackPressureReason.MAX_CONCURRENCY_EXCEEDED;
 import static org.mule.runtime.core.api.processor.ReactiveProcessor.ProcessingType.CPU_LITE_ASYNC;
 import static org.mule.runtime.core.internal.processor.strategy.AbstractStreamProcessingStrategyFactory.DEFAULT_BUFFER_SIZE;
-import static reactor.core.publisher.Flux.from;
-import static reactor.core.scheduler.Schedulers.fromExecutorService;
+import static org.mule.runtime.core.internal.processor.strategy.ComponentMessageProcessorChainBuilder.buildProcessorChainFrom;
+
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.lifecycle.Disposable;
@@ -22,13 +27,8 @@ import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.api.processor.ReactiveProcessor;
 import org.mule.runtime.core.internal.construct.FromFlowRejectedExecutionException;
 import org.mule.runtime.core.internal.processor.strategy.AbstractStreamProcessingStrategyFactory.AbstractStreamProcessingStrategy;
+import org.mule.runtime.core.internal.util.rx.ImmediateScheduler;
 import org.mule.runtime.core.privileged.event.BaseEventContext;
-
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 abstract class AbstractReactorStreamProcessingStrategy extends AbstractStreamProcessingStrategy
     implements Startable, Stoppable, Disposable {
@@ -52,17 +52,27 @@ abstract class AbstractReactorStreamProcessingStrategy extends AbstractStreamPro
 
   @Override
   public ReactiveProcessor onProcessor(ReactiveProcessor processor) {
+    return publisher -> buildProcessorChainFrom(processor, publisher)
+        .withExecutionOrchestrator(new DefaultExecutionOrchestrator(processor, getDispatcherScheduler(processor),
+                                                                    getCallbackScheduler(processor),
+                                                                    getContextProcessorScheduler(processor)))
+        .build();
+  }
+
+  protected ScheduledExecutorService getDispatcherScheduler(ReactiveProcessor processor) {
+    return ImmediateScheduler.IMMEDIATE_SCHEDULER;
+  }
+
+  protected ScheduledExecutorService getCallbackScheduler(ReactiveProcessor processor) {
     if (processor.getProcessingType() == CPU_LITE_ASYNC) {
-      reactor.core.scheduler.Scheduler cpuLiteScheduler = fromExecutorService(getNonBlockingTaskScheduler());
-      return publisher -> from(publisher)
-          .transform(processor)
-          .publishOn(cpuLiteScheduler)
-          .subscriberContext(ctx -> ctx.put(PROCESSOR_SCHEDULER_CONTEXT_KEY, getCpuLightScheduler()));
+      return getNonBlockingTaskScheduler();
     } else {
-      return publisher -> from(publisher)
-          .transform(processor)
-          .subscriberContext(ctx -> ctx.put(PROCESSOR_SCHEDULER_CONTEXT_KEY, getCpuLightScheduler()));
+      return ImmediateScheduler.IMMEDIATE_SCHEDULER;
     }
+  }
+
+  protected ScheduledExecutorService getContextProcessorScheduler(ReactiveProcessor processor) {
+    return getCpuLightScheduler();
   }
 
   protected ScheduledExecutorService getNonBlockingTaskScheduler() {

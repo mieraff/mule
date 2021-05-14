@@ -76,6 +76,7 @@ public class MessageProcessors {
   public static final String WITHIN_PROCESS_TO_APPLY = "messageProcessors.withinProcessToApply";
   protected static final String WITHIN_PROCESS_WITH_CHILD_CONTEXT = "messageProcessors.withinProcessWithChildContext";
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageProcessors.class);
+  public static final String THREAD_PROCESSOR_TRACER = "default.processor.strategy.tracer";
 
   private MessageProcessors() {
     // do not instantiate

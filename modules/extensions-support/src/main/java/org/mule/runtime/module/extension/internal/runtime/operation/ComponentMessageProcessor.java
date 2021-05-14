@@ -708,7 +708,7 @@ public abstract class ComponentMessageProcessor<T extends ComponentModel> extend
                     .getCallback().error(t.getCause());
               })));
     },
-                                                getRuntime().availableProcessors());
+                                                1);
   }
 
   private CoreEvent addContextToEvent(CoreEvent event, Context ctx) throws MuleException {

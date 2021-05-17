@@ -8,15 +8,16 @@ package org.mule.runtime.core.internal.processor.strategy;
 
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Math.max;
+import static org.mule.runtime.core.api.config.MuleProperties.MULE_ORCHESTRATOR_MANAGER;
 import static org.mule.runtime.core.api.processor.ReactiveProcessor.ProcessingType.BLOCKING;
 import static org.mule.runtime.core.api.processor.ReactiveProcessor.ProcessingType.CPU_INTENSIVE;
+import static org.mule.runtime.core.api.processor.ReactiveProcessor.ProcessingType.CPU_LITE;
 import static org.mule.runtime.core.api.processor.ReactiveProcessor.ProcessingType.CPU_LITE_ASYNC;
 import static org.mule.runtime.core.api.processor.ReactiveProcessor.ProcessingType.IO_RW;
 import static org.mule.runtime.core.internal.processor.strategy.ComponentMessageProcessorChainBuilder.buildProcessorChainFrom;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.mule.runtime.api.exception.MuleException;
@@ -26,6 +27,8 @@ import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.processor.ReactiveProcessor;
 import org.mule.runtime.core.api.processor.strategy.AsyncProcessingStrategyFactory;
 import org.mule.runtime.core.api.processor.strategy.ProcessingStrategy;
+import org.mule.runtime.core.internal.context.MuleContextWithRegistry;
+import org.mule.runtime.core.internal.orchestration.MuleOrchestratorManager;
 import org.mule.runtime.core.internal.processor.strategy.StreamEmitterProcessingStrategyFactory.StreamEmitterProcessingStrategy;
 import org.mule.runtime.core.internal.util.rx.ImmediateScheduler;
 import org.mule.runtime.core.internal.util.rx.RetrySchedulerWrapper;
@@ -48,6 +51,9 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
   @Override
   public ProcessingStrategy create(MuleContext muleContext, String schedulersNamePrefix) {
     Supplier<Scheduler> cpuLightSchedulerSupplier = getCpuLightSchedulerSupplier(muleContext, schedulersNamePrefix);
+    MuleOrchestratorManager orchestratorManager =
+        ((MuleContextWithRegistry) muleContext).getRegistry().get(MULE_ORCHESTRATOR_MANAGER);
+
     return new ProactorStreamEmitterProcessingStrategy(getBufferSize(),
                                                        getSubscriberCount(),
                                                        cpuLightSchedulerSupplier,
@@ -63,7 +69,8 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
                                                        resolveParallelism(),
                                                        getMaxConcurrency(),
                                                        isMaxConcurrencyEagerCheck(),
-                                                       () -> muleContext.getConfiguration().getShutdownTimeout());
+                                                       () -> muleContext.getConfiguration().getShutdownTimeout(),
+                                                       orchestratorManager);
   }
 
   @Override
@@ -77,9 +84,10 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
 
     private final Supplier<Scheduler> blockingSchedulerSupplier;
     private final Supplier<Scheduler> cpuIntensiveSchedulerSupplier;
-    private Function<ScheduledExecutorService, ScheduledExecutorService> schedulerServiceDecorator;
     private Scheduler blockingScheduler;
     private Scheduler cpuIntensiveScheduler;
+
+    private MuleOrchestratorManager orchestratorManager;
 
 
 
@@ -92,11 +100,13 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
                                                    int parallelism,
                                                    int maxConcurrency,
                                                    boolean maxConcurrencyEagerCheck,
-                                                   Supplier<Long> shutdownTimeoutSupplier) {
+                                                   Supplier<Long> shutdownTimeoutSupplier,
+                                                   MuleOrchestratorManager orchestratorManager) {
       super(bufferSize, subscriberCount, flowDispatchSchedulerSupplier, cpuLightSchedulerSupplier, parallelism, maxConcurrency,
             maxConcurrencyEagerCheck, shutdownTimeoutSupplier);
       this.blockingSchedulerSupplier = blockingSchedulerSupplier;
       this.cpuIntensiveSchedulerSupplier = cpuIntensiveSchedulerSupplier;
+      this.orchestratorManager = orchestratorManager;
     }
 
     @Override
@@ -139,9 +149,9 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
     @Override
     public ReactiveProcessor onProcessor(ReactiveProcessor processor) {
       return publisher -> buildProcessorChainFrom(processor, publisher)
-          .withExecutionOrchestrator(new DefaultExecutionOrchestrator(processor, getDispatcherScheduler(processor),
-                                                                      getCallbackScheduler(processor),
-                                                                      getContextProcessorScheduler(processor)))
+          .withExecutionOrchestrator(orchestratorManager.getOrchestrator(processor, getDispatcherScheduler(processor),
+                                                                         getCallbackScheduler(processor),
+                                                                         getContextProcessorScheduler(processor)))
           .withParallelism(getChainParallelism(processor))
           .build();
     }
@@ -165,7 +175,7 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
     }
 
     @Override
-    protected ScheduledExecutorService getContextProcessorScheduler(ReactiveProcessor processor) {
+    protected Scheduler getContextProcessorScheduler(ReactiveProcessor processor) {
       if (processor.getProcessingType() == BLOCKING || processor.getProcessingType() == IO_RW) {
         return blockingScheduler;
       } else if (processor.getProcessingType() == CPU_INTENSIVE) {
@@ -175,9 +185,14 @@ public class ProactorStreamEmitterProcessingStrategyFactory extends AbstractStre
       }
     }
 
-    private int getChainParallelism(ReactiveProcessor processor) {
+    @Override
+    protected int getChainParallelism(ReactiveProcessor processor) {
       // FlatMap is the way reactor has to do parallel processing. Since this proactor method is used for the processors that are
       // not CPU_LITE, parallelism is wanted when the processor is blocked to do IO or doing long CPU work.
+      if (processor.getProcessingType() == CPU_LITE) {
+        return super.getChainParallelism(processor);
+      }
+
       if (maxConcurrency == 1) {
         return 1;
 

@@ -18,6 +18,7 @@ import static org.mule.runtime.config.api.LazyComponentInitializer.LAZY_COMPONEN
 import static org.mule.runtime.config.internal.InjectParamsFromContextServiceProxy.createInjectProviderParamsServiceProxy;
 import static org.mule.runtime.core.api.config.MuleProperties.LOCAL_OBJECT_LOCK_FACTORY;
 import static org.mule.runtime.core.api.config.MuleProperties.LOCAL_OBJECT_STORE_MANAGER;
+import static org.mule.runtime.core.api.config.MuleProperties.MULE_ORCHESTRATOR_MANAGER;
 import static org.mule.runtime.core.api.config.MuleProperties.OBJECT_CLUSTER_SERVICE;
 import static org.mule.runtime.core.api.config.MuleProperties.OBJECT_COMPONENT_INITIAL_STATE_MANAGER;
 import static org.mule.runtime.core.api.config.MuleProperties.OBJECT_CONFIGURATION_PROPERTIES;
@@ -102,6 +103,7 @@ import org.mule.runtime.config.internal.factories.TransactionManagerFactoryBean;
 import org.mule.runtime.config.internal.processor.MuleObjectNameProcessor;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.config.DefaultMuleConfiguration;
+import org.mule.runtime.core.api.config.MuleProperties;
 import org.mule.runtime.core.api.config.bootstrap.ArtifactType;
 import org.mule.runtime.core.api.context.notification.MuleContextNotification;
 import org.mule.runtime.core.api.context.notification.MuleContextNotificationListener;
@@ -129,6 +131,7 @@ import org.mule.runtime.core.internal.management.stats.DefaultProcessingTimeWatc
 import org.mule.runtime.core.internal.management.stats.PayloadStatisticsCursorDecoratorFactory;
 import org.mule.runtime.core.internal.metadata.MuleMetadataService;
 import org.mule.runtime.core.internal.metadata.cache.DefaultPersistentMetadataCacheManager;
+import org.mule.runtime.core.internal.orchestration.DefaultMuleOrchestratorManager;
 import org.mule.runtime.core.internal.policy.DefaultPolicyManager;
 import org.mule.runtime.core.internal.processor.interceptor.DefaultProcessorInterceptorManager;
 import org.mule.runtime.core.internal.security.DefaultMuleSecurityManager;
@@ -254,6 +257,7 @@ class SpringMuleContextServiceConfigurator {
       .put(OBJECT_CONNECTIVITY_TESTER_FACTORY, getBeanDefinition(DefaultConnectivityTesterFactory.class))
       .put(LAZY_COMPONENT_INITIALIZER_SERVICE_KEY, getBeanDefinition(NoOpLazyComponentInitializer.class))
       .put(METADATA_CACHE_MANAGER_KEY, getBeanDefinition(DefaultPersistentMetadataCacheManager.class))
+      .put(MULE_ORCHESTRATOR_MANAGER, getBeanDefinition(DefaultMuleOrchestratorManager.class))
       .build();
 
   private final SpringConfigurationComponentLocator componentLocator;

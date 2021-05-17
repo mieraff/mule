@@ -10,11 +10,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.mule.runtime.api.scheduler.Scheduler;
 import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.api.processor.ReactiveProcessor;
+import org.mule.runtime.core.internal.util.rx.ImmediateScheduler;
 import org.slf4j.Logger;
-
-import reactor.core.scheduler.Scheduler;
 
 
 public class DefaultExecutionOrchestrator implements ExecutionOrchestrator {
@@ -23,24 +23,27 @@ public class DefaultExecutionOrchestrator implements ExecutionOrchestrator {
 
   private ReactiveProcessor processor;
 
-  private ScheduledExecutorService dispatcherScheduler;
-  private ScheduledExecutorService callbackScheduler;
-  private ScheduledExecutorService contextProcessorScheduler;
+  private OrchestratedScheduledExecutorService dispatcherScheduler;
+  private OrchestratedScheduledExecutorService callbackScheduler;
+  private OrchestratedScheduler contextProcessorScheduler;
 
   private String location = "";
 
   public DefaultExecutionOrchestrator(ReactiveProcessor processor, ScheduledExecutorService dispatcherScheduler,
                                       ScheduledExecutorService callbackScheduler,
-                                      ScheduledExecutorService contextProcessorScheduler) {
+                                      Scheduler contextProcessorScheduler) {
     this.processor = processor;
-    this.dispatcherScheduler = dispatcherScheduler;
-    this.callbackScheduler = callbackScheduler;
-    this.contextProcessorScheduler = contextProcessorScheduler;
+    this.dispatcherScheduler = new OrchestratedScheduledExecutorService(dispatcherScheduler);
+    this.callbackScheduler = new OrchestratedScheduledExecutorService(callbackScheduler);
+    this.contextProcessorScheduler = new OrchestratedScheduler(contextProcessorScheduler);
     location = processor.toString();
   }
 
   @Override
   public void traceAfter(CoreEvent event) {
+    if (dispatcherScheduler.getDelegate() instanceof ImmediateScheduler) {
+      return;
+    }
     LOGGER.warn("After dispatching {} on {}", event.getCorrelationId(), location);
 
   }
@@ -52,6 +55,9 @@ public class DefaultExecutionOrchestrator implements ExecutionOrchestrator {
 
   @Override
   public void traceBefore(CoreEvent event) {
+    if (dispatcherScheduler.getDelegate() instanceof ImmediateScheduler) {
+      return;
+    }
     LOGGER.warn("Before dispaching {} on {}", event.getCorrelationId(), location);
   }
 
@@ -68,6 +74,12 @@ public class DefaultExecutionOrchestrator implements ExecutionOrchestrator {
   @Override
   public ScheduledExecutorService getContextProcessorScheduler() {
     return contextProcessorScheduler;
+  }
+
+  public void changeScheduler(Scheduler newScheduler) {
+    contextProcessorScheduler.change(newScheduler);
+    this.dispatcherScheduler.change(newScheduler);
+
   }
 
 

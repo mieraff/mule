@@ -59,6 +59,11 @@ abstract class AbstractReactorStreamProcessingStrategy extends AbstractStreamPro
         .build();
   }
 
+
+  protected int getChainParallelism(ReactiveProcessor processor) {
+    return 1;
+  }
+
   protected ScheduledExecutorService getDispatcherScheduler(ReactiveProcessor processor) {
     return ImmediateScheduler.IMMEDIATE_SCHEDULER;
   }
@@ -71,7 +76,7 @@ abstract class AbstractReactorStreamProcessingStrategy extends AbstractStreamPro
     }
   }
 
-  protected ScheduledExecutorService getContextProcessorScheduler(ReactiveProcessor processor) {
+  protected Scheduler getContextProcessorScheduler(ReactiveProcessor processor) {
     return getCpuLightScheduler();
   }
 

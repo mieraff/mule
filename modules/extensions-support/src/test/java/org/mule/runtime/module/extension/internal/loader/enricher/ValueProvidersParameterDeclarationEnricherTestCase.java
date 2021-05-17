@@ -14,15 +14,20 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mule.runtime.api.dsl.DslResolvingContext.getDefault;
 import static org.mule.runtime.core.api.config.MuleManifest.getProductVersion;
 import static org.mule.runtime.module.extension.internal.loader.enricher.EnricherTestUtils.getNamedObject;
 
+import org.mule.runtime.api.meta.MuleVersion;
 import org.mule.runtime.api.meta.model.declaration.fluent.ExtensionDeclaration;
 import org.mule.runtime.api.meta.model.declaration.fluent.ExtensionDeclarer;
 import org.mule.runtime.api.meta.model.declaration.fluent.OperationDeclaration;
 import org.mule.runtime.api.meta.model.declaration.fluent.ParameterDeclaration;
 import org.mule.runtime.api.meta.model.parameter.ActingParameterModel;
+import org.mule.runtime.api.meta.model.parameter.FieldValueProviderModel;
+import org.mule.runtime.api.meta.model.parameter.ValueProviderModel;
+import org.mule.runtime.extension.api.property.SinceMuleVersionModelProperty;
 import org.mule.runtime.extension.internal.loader.DefaultExtensionLoadingContext;
 import org.mule.runtime.module.extension.internal.loader.java.DefaultJavaModelLoaderDelegate;
 import org.mule.runtime.module.extension.internal.loader.java.property.DeclaringMemberModelProperty;
@@ -196,6 +201,60 @@ public class ValueProvidersParameterDeclarationEnricherTestCase {
     assertThat(parameter.getName(), is("requiredValue"));
     assertThat(parameter.isRequired(), is(true));
     assertThat(parameter.getExtractionExpression(), is("actingParameter.field"));
+  }
+
+  @Test
+  public void verifyParameterWithFieldValueProviderWithFieldActingParameters() {
+    ParameterDeclaration parameterDeclaration =
+        getParameterByOperationAndName("tagContentAsActingForAttributeValue", "xmlBody");
+
+    assertThat(parameterDeclaration, notNullValue());
+    assertThat(parameterDeclaration.getValueProviderModel(), nullValue());
+
+    assertThat(parameterDeclaration.getFieldValueProviderModels(), notNullValue());
+    assertThat(parameterDeclaration.getFieldValueProviderModels(), hasSize(1));
+
+    FieldValueProviderModel fieldValueProviderModel = parameterDeclaration.getFieldValueProviderModels().get(0);
+
+    assertThat(fieldValueProviderModel.getTargetSelector(), is("nested.tag.@customAttribute"));
+    assertThat(fieldValueProviderModel.getParameters(), hasSize(1));
+
+    ActingParameterModel parameter = fieldValueProviderModel.getParameters().get(0);
+
+    assertThat(parameter, notNullValue());
+    assertThat(parameter.getName(), is("requiredValue"));
+    assertThat(parameter.isRequired(), is(true));
+    assertThat(parameter.getExtractionExpression(), is("xmlBody.nested.someTag"));
+  }
+
+  public void verifySinceMuleVersionModelPropertyAdded() {
+    ParameterDeclaration parameterDeclaration =
+        getParameterByOperationAndName("withBoundActingParameterField", "parameterWithValues");
+
+    assertThat(parameterDeclaration, notNullValue());
+    assertThat(parameterDeclaration.getValueProviderModel(), notNullValue());
+
+    ValueProviderModel valueProviderModel = parameterDeclaration.getValueProviderModel();
+
+    assertThat(valueProviderModel.getModelProperty(SinceMuleVersionModelProperty.class).isPresent(), is(true));
+
+    SinceMuleVersionModelProperty sinceMuleVersionModelProperty =
+        valueProviderModel.getModelProperty(SinceMuleVersionModelProperty.class).get();
+
+    assertThat(sinceMuleVersionModelProperty.getVersion(), is(new MuleVersion("4.4.0")));
+  }
+
+  @Test
+  public void verifySinceMuleVersionModelPropertyNotAdded() {
+    ParameterDeclaration parameterDeclaration =
+        getParameterByOperationAndName("singleValuesEnabledParameterWithRequiredParameters", "channels");
+
+    assertThat(parameterDeclaration, notNullValue());
+    assertThat(parameterDeclaration.getValueProviderModel(), notNullValue());
+
+    ValueProviderModel valueProviderModel = parameterDeclaration.getValueProviderModel();
+
+    assertThat(valueProviderModel.getModelProperty(SinceMuleVersionModelProperty.class).isPresent(), is(false));
   }
 
   private ParameterDeclaration getParameterByOperationAndName(String operationName, String parameterName) {

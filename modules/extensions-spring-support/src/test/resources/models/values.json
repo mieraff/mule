@@ -82,7 +82,12 @@
                 "providerId": "WithRequiredParametersFromConfigValueProvider-Id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -678,7 +683,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterFromGroupLegacyValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -890,7 +896,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -1298,7 +1309,12 @@
                 "providerId": "WithRequiredParameterFromGroupValueProvider-id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -1510,7 +1526,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -1886,6 +1907,1334 @@
     },
     {
       "stereotype": {
+        "type": "CHAT",
+        "namespace": "VALUES",
+        "parent": {
+          "type": "MODULE_CONFIG",
+          "namespace": "MULE"
+        }
+      },
+      "parameterGroupModels": [
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "java",
+                "type": "String"
+              },
+              "hasDynamicType": false,
+              "required": true,
+              "isConfigOverride": false,
+              "isComponentId": true,
+              "fieldValueProviderModels": [],
+              "expressionSupport": "NOT_SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "name",
+              "description": "The identifier of this element used to reference it in other components",
+              "modelProperties": {}
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 1
+          },
+          "showInDsl": false,
+          "name": "General",
+          "description": "",
+          "modelProperties": {}
+        }
+      ],
+      "externalLibraryModels": [],
+      "operations": [
+        {
+          "blocking": true,
+          "executionType": "BLOCKING",
+          "output": {
+            "type": {
+              "format": "java",
+              "type": "Void"
+            },
+            "hasDynamicType": false,
+            "description": "",
+            "modelProperties": {}
+          },
+          "outputAttributes": {
+            "type": {
+              "format": "java",
+              "type": "Void"
+            },
+            "hasDynamicType": false,
+            "description": "",
+            "modelProperties": {}
+          },
+          "transactional": false,
+          "requiresConnection": true,
+          "supportsStreaming": false,
+          "notifications": [],
+          "nestedComponents": [],
+          "errors": [
+            "VALUES:RETRY_EXHAUSTED",
+            "VALUES:CONNECTIVITY"
+          ],
+          "semanticTerms": [],
+          "stereotype": {
+            "type": "WITH_JSON_BODY_PARAMETER_WITH_FIELD",
+            "namespace": "VALUES",
+            "parent": {
+              "type": "PROCESSOR",
+              "namespace": "VALUES",
+              "parent": {
+                "type": "PROCESSOR",
+                "namespace": "MULE"
+              }
+            }
+          },
+          "parameterGroupModels": [
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "json",
+                    "type": "Any",
+                    "annotations": {
+                      "classInformation": {
+                        "classname": "java.io.InputStream",
+                        "hasDefaultConstructor": true,
+                        "isInterface": false,
+                        "isInstantiable": false,
+                        "isAbstract": true,
+                        "isFinal": false,
+                        "implementedInterfaces": [
+                          "java.io.Closeable"
+                        ],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    }
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [
+                    {
+                      "targetSelector": "channelId",
+                      "parameters": [
+                        {
+                          "name": "workspace",
+                          "required": true,
+                          "extractionExpression": "body.workspace"
+                        }
+                      ],
+                      "partOrder": 1,
+                      "providerName": "body",
+                      "providerId": "Channels value provider",
+                      "requiresConfiguration": false,
+                      "requiresConnection": true,
+                      "isOpen": true,
+                      "modelProperties": {}
+                    },
+                    {
+                      "targetSelector": "workspace",
+                      "parameters": [],
+                      "partOrder": 1,
+                      "providerName": "body",
+                      "providerId": "Workspaces value provider",
+                      "requiresConfiguration": false,
+                      "requiresConnection": true,
+                      "isOpen": true,
+                      "modelProperties": {}
+                    }
+                  ],
+                  "expressionSupport": "SUPPORTED",
+                  "defaultValue": "#[payload]",
+                  "role": "PRIMARY_CONTENT",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": true,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 1
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "body",
+                  "description": "",
+                  "modelProperties": {}
+                },
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Object",
+                    "annotations": {
+                      "typeId": "org.mule.runtime.extension.api.runtime.config.ConfigurationProvider",
+                      "classInformation": {
+                        "classname": "org.mule.runtime.extension.api.runtime.config.ConfigurationProvider",
+                        "hasDefaultConstructor": false,
+                        "isInterface": true,
+                        "isInstantiable": false,
+                        "isAbstract": true,
+                        "isFinal": false,
+                        "implementedInterfaces": [],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    },
+                    "fields": []
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": false,
+                    "allowsReferences": true,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 2
+                  },
+                  "allowedStereotypeModels": [
+                    {
+                      "type": "CHAT",
+                      "namespace": "VALUES",
+                      "parent": {
+                        "type": "MODULE_CONFIG",
+                        "namespace": "MULE"
+                      }
+                    }
+                  ],
+                  "semanticTerms": [],
+                  "name": "config-ref",
+                  "description": "The name of the configuration to be used to execute this component",
+                  "modelProperties": {}
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "showInDsl": false,
+              "name": "General",
+              "description": "",
+              "modelProperties": {}
+            },
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Array",
+                    "annotations": {
+                      "description": {
+                        "value": "Determines that an error thrown by this operation should be mapped to another"
+                      },
+                      "typeDsl": {
+                        "allowInlineDefinition": true,
+                        "allowTopLevelDefinition": false
+                      }
+                    },
+                    "item": {
+                      "type": "Object",
+                      "annotations": {
+                        "typeId": "errorMapping"
+                      },
+                      "fields": [
+                        {
+                          "key": {
+                            "name": "source"
+                          },
+                          "model": {
+                            "format": {
+                              "id": "text",
+                              "label": "Text",
+                              "validMimeTypes": [
+                                "text/plain"
+                              ]
+                            },
+                            "type": "String",
+                            "annotations": {
+                              "typeId": "errorTypeMatcher",
+                              "enum": {
+                                "type": "[Ljava.lang.String;",
+                                "values": [
+                                  "ANY",
+                                  "REDELIVERY_EXHAUSTED",
+                                  "TRANSFORMATION",
+                                  "EXPRESSION",
+                                  "SECURITY",
+                                  "CLIENT_SECURITY",
+                                  "SERVER_SECURITY",
+                                  "ROUTING",
+                                  "CONNECTIVITY",
+                                  "RETRY_EXHAUSTED",
+                                  "TIMEOUT"
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "key": {
+                            "name": "target",
+                            "required": "true"
+                          },
+                          "model": {
+                            "format": {
+                              "id": "text",
+                              "label": "Text",
+                              "validMimeTypes": [
+                                "text/plain"
+                              ]
+                            },
+                            "type": "String",
+                            "annotations": {
+                              "typeId": "errorTypeDefinition"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": false,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 3,
+                    "tabName": "Error Mapping"
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "errorMappings",
+                  "description": "Set of error mappings",
+                  "modelProperties": {
+                    "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                      "value": {
+                        "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                        "localPart": "error-mapping",
+                        "prefix": "mule"
+                      }
+                    },
+                    "sinceMuleVersion": {
+                      "version": "4.4.0"
+                    },
+                    "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                      "sequence": 12
+                    }
+                  }
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 2
+              },
+              "showInDsl": false,
+              "name": "Error Mappings",
+              "description": "",
+              "modelProperties": {}
+            },
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Union",
+                    "annotations": {
+                      "typeId": "ReconnectionStrategy"
+                    },
+                    "of": [
+                      {
+                        "type": "Object",
+                        "annotations": {
+                          "typeId": "reconnect"
+                        },
+                        "fields": [
+                          {
+                            "key": {
+                              "name": "frequency"
+                            },
+                            "model": {
+                              "type": "Number",
+                              "annotations": {
+                                "int": {},
+                                "classInformation": {
+                                  "classname": "java.lang.Long",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": false,
+                                  "isInstantiable": false,
+                                  "isAbstract": false,
+                                  "isFinal": true,
+                                  "implementedInterfaces": [
+                                    "java.lang.Comparable"
+                                  ],
+                                  "parent": "java.lang.Number",
+                                  "genericTypes": [],
+                                  "isMap": false
+                                },
+                                "default": "2000"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "How often (in ms) to reconnect"
+                              }
+                            }
+                          },
+                          {
+                            "key": {
+                              "name": "blocking"
+                            },
+                            "model": {
+                              "type": "Boolean",
+                              "annotations": {
+                                "default": "true"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "If false, the reconnection strategy will run in a separate, non-blocking thread"
+                              }
+                            }
+                          },
+                          {
+                            "key": {
+                              "name": "count"
+                            },
+                            "model": {
+                              "type": "Number",
+                              "annotations": {
+                                "int": {},
+                                "default": "2"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "How many reconnection attempts to make"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Object",
+                        "annotations": {
+                          "typeId": "reconnect-forever"
+                        },
+                        "fields": [
+                          {
+                            "key": {
+                              "name": "frequency"
+                            },
+                            "model": {
+                              "type": "Number",
+                              "annotations": {
+                                "int": {},
+                                "classInformation": {
+                                  "classname": "java.lang.Long",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": false,
+                                  "isInstantiable": false,
+                                  "isAbstract": false,
+                                  "isFinal": true,
+                                  "implementedInterfaces": [
+                                    "java.lang.Comparable"
+                                  ],
+                                  "parent": "java.lang.Number",
+                                  "genericTypes": [],
+                                  "isMap": false
+                                },
+                                "default": "2000"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "How often (in ms) to reconnect"
+                              }
+                            }
+                          },
+                          {
+                            "key": {
+                              "name": "blocking"
+                            },
+                            "model": {
+                              "type": "Boolean",
+                              "annotations": {
+                                "default": "true"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "If false, the reconnection strategy will run in a separate, non-blocking thread"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": true,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 4,
+                    "tabName": "Advanced"
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "reconnectionStrategy",
+                  "description": "A retry strategy in case of connectivity errors",
+                  "modelProperties": {
+                    "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                      "value": {
+                        "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                        "localPart": "abstract-reconnection-strategy",
+                        "prefix": "mule"
+                      }
+                    },
+                    "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                      "sequence": 3
+                    }
+                  }
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 3
+              },
+              "showInDsl": false,
+              "name": "Connection",
+              "description": "",
+              "modelProperties": {}
+            }
+          ],
+          "name": "withJsonBodyParameterWithField",
+          "description": "",
+          "modelProperties": {},
+          "kind": "operation"
+        },
+        {
+          "blocking": true,
+          "executionType": "BLOCKING",
+          "output": {
+            "type": {
+              "format": "java",
+              "type": "Void"
+            },
+            "hasDynamicType": false,
+            "description": "",
+            "modelProperties": {}
+          },
+          "outputAttributes": {
+            "type": {
+              "format": "java",
+              "type": "Void"
+            },
+            "hasDynamicType": false,
+            "description": "",
+            "modelProperties": {}
+          },
+          "transactional": false,
+          "requiresConnection": true,
+          "supportsStreaming": false,
+          "notifications": [],
+          "nestedComponents": [],
+          "errors": [
+            "VALUES:RETRY_EXHAUSTED",
+            "VALUES:CONNECTIVITY"
+          ],
+          "semanticTerms": [],
+          "stereotype": {
+            "type": "WITH_JSON_BODY_PARAMETER_WITH_MULTI_LEVEL_FIELD",
+            "namespace": "VALUES",
+            "parent": {
+              "type": "PROCESSOR",
+              "namespace": "VALUES",
+              "parent": {
+                "type": "PROCESSOR",
+                "namespace": "MULE"
+              }
+            }
+          },
+          "parameterGroupModels": [
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "json",
+                    "type": "Any",
+                    "annotations": {
+                      "classInformation": {
+                        "classname": "java.io.InputStream",
+                        "hasDefaultConstructor": true,
+                        "isInterface": false,
+                        "isInstantiable": false,
+                        "isAbstract": true,
+                        "isFinal": false,
+                        "implementedInterfaces": [
+                          "java.io.Closeable"
+                        ],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    }
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [
+                    {
+                      "targetSelector": "workspace",
+                      "parameters": [],
+                      "partOrder": 1,
+                      "providerName": "body",
+                      "providerId": "Chat multilevel value provider",
+                      "requiresConfiguration": false,
+                      "requiresConnection": true,
+                      "isOpen": true,
+                      "modelProperties": {}
+                    },
+                    {
+                      "targetSelector": "channelId",
+                      "parameters": [],
+                      "partOrder": 2,
+                      "providerName": "body",
+                      "providerId": "Chat multilevel value provider",
+                      "requiresConfiguration": false,
+                      "requiresConnection": true,
+                      "isOpen": true,
+                      "modelProperties": {}
+                    }
+                  ],
+                  "expressionSupport": "SUPPORTED",
+                  "defaultValue": "#[payload]",
+                  "role": "PRIMARY_CONTENT",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": true,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 1
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "body",
+                  "description": "",
+                  "modelProperties": {}
+                },
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Object",
+                    "annotations": {
+                      "typeId": "org.mule.runtime.extension.api.runtime.config.ConfigurationProvider",
+                      "classInformation": {
+                        "classname": "org.mule.runtime.extension.api.runtime.config.ConfigurationProvider",
+                        "hasDefaultConstructor": false,
+                        "isInterface": true,
+                        "isInstantiable": false,
+                        "isAbstract": true,
+                        "isFinal": false,
+                        "implementedInterfaces": [],
+                        "parent": "",
+                        "genericTypes": [],
+                        "isMap": false
+                      }
+                    },
+                    "fields": []
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": false,
+                    "allowsReferences": true,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 2
+                  },
+                  "allowedStereotypeModels": [
+                    {
+                      "type": "CHAT",
+                      "namespace": "VALUES",
+                      "parent": {
+                        "type": "MODULE_CONFIG",
+                        "namespace": "MULE"
+                      }
+                    }
+                  ],
+                  "semanticTerms": [],
+                  "name": "config-ref",
+                  "description": "The name of the configuration to be used to execute this component",
+                  "modelProperties": {}
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "showInDsl": false,
+              "name": "General",
+              "description": "",
+              "modelProperties": {}
+            },
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Array",
+                    "annotations": {
+                      "description": {
+                        "value": "Determines that an error thrown by this operation should be mapped to another"
+                      },
+                      "typeDsl": {
+                        "allowInlineDefinition": true,
+                        "allowTopLevelDefinition": false
+                      }
+                    },
+                    "item": {
+                      "type": "Object",
+                      "annotations": {
+                        "typeId": "errorMapping"
+                      },
+                      "fields": [
+                        {
+                          "key": {
+                            "name": "source"
+                          },
+                          "model": {
+                            "format": {
+                              "id": "text",
+                              "label": "Text",
+                              "validMimeTypes": [
+                                "text/plain"
+                              ]
+                            },
+                            "type": "String",
+                            "annotations": {
+                              "typeId": "errorTypeMatcher",
+                              "enum": {
+                                "type": "[Ljava.lang.String;",
+                                "values": [
+                                  "ANY",
+                                  "REDELIVERY_EXHAUSTED",
+                                  "TRANSFORMATION",
+                                  "EXPRESSION",
+                                  "SECURITY",
+                                  "CLIENT_SECURITY",
+                                  "SERVER_SECURITY",
+                                  "ROUTING",
+                                  "CONNECTIVITY",
+                                  "RETRY_EXHAUSTED",
+                                  "TIMEOUT"
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "key": {
+                            "name": "target",
+                            "required": "true"
+                          },
+                          "model": {
+                            "format": {
+                              "id": "text",
+                              "label": "Text",
+                              "validMimeTypes": [
+                                "text/plain"
+                              ]
+                            },
+                            "type": "String",
+                            "annotations": {
+                              "typeId": "errorTypeDefinition"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": false,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 3,
+                    "tabName": "Error Mapping"
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "errorMappings",
+                  "description": "Set of error mappings",
+                  "modelProperties": {
+                    "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                      "value": {
+                        "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                        "localPart": "error-mapping",
+                        "prefix": "mule"
+                      }
+                    },
+                    "sinceMuleVersion": {
+                      "version": "4.4.0"
+                    },
+                    "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                      "sequence": 12
+                    }
+                  }
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 2
+              },
+              "showInDsl": false,
+              "name": "Error Mappings",
+              "description": "",
+              "modelProperties": {}
+            },
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Union",
+                    "annotations": {
+                      "typeId": "ReconnectionStrategy"
+                    },
+                    "of": [
+                      {
+                        "type": "Object",
+                        "annotations": {
+                          "typeId": "reconnect"
+                        },
+                        "fields": [
+                          {
+                            "key": {
+                              "name": "frequency"
+                            },
+                            "model": {
+                              "type": "Number",
+                              "annotations": {
+                                "int": {},
+                                "classInformation": {
+                                  "classname": "java.lang.Long",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": false,
+                                  "isInstantiable": false,
+                                  "isAbstract": false,
+                                  "isFinal": true,
+                                  "implementedInterfaces": [
+                                    "java.lang.Comparable"
+                                  ],
+                                  "parent": "java.lang.Number",
+                                  "genericTypes": [],
+                                  "isMap": false
+                                },
+                                "default": "2000"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "How often (in ms) to reconnect"
+                              }
+                            }
+                          },
+                          {
+                            "key": {
+                              "name": "blocking"
+                            },
+                            "model": {
+                              "type": "Boolean",
+                              "annotations": {
+                                "default": "true"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "If false, the reconnection strategy will run in a separate, non-blocking thread"
+                              }
+                            }
+                          },
+                          {
+                            "key": {
+                              "name": "count"
+                            },
+                            "model": {
+                              "type": "Number",
+                              "annotations": {
+                                "int": {},
+                                "default": "2"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "How many reconnection attempts to make"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Object",
+                        "annotations": {
+                          "typeId": "reconnect-forever"
+                        },
+                        "fields": [
+                          {
+                            "key": {
+                              "name": "frequency"
+                            },
+                            "model": {
+                              "type": "Number",
+                              "annotations": {
+                                "int": {},
+                                "classInformation": {
+                                  "classname": "java.lang.Long",
+                                  "hasDefaultConstructor": false,
+                                  "isInterface": false,
+                                  "isInstantiable": false,
+                                  "isAbstract": false,
+                                  "isFinal": true,
+                                  "implementedInterfaces": [
+                                    "java.lang.Comparable"
+                                  ],
+                                  "parent": "java.lang.Number",
+                                  "genericTypes": [],
+                                  "isMap": false
+                                },
+                                "default": "2000"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "How often (in ms) to reconnect"
+                              }
+                            }
+                          },
+                          {
+                            "key": {
+                              "name": "blocking"
+                            },
+                            "model": {
+                              "type": "Boolean",
+                              "annotations": {
+                                "default": "true"
+                              }
+                            },
+                            "annotations": {
+                              "description": {
+                                "value": "If false, the reconnection strategy will run in a separate, non-blocking thread"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": true,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 4,
+                    "tabName": "Advanced"
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "reconnectionStrategy",
+                  "description": "A retry strategy in case of connectivity errors",
+                  "modelProperties": {
+                    "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                      "value": {
+                        "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                        "localPart": "abstract-reconnection-strategy",
+                        "prefix": "mule"
+                      }
+                    },
+                    "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                      "sequence": 3
+                    }
+                  }
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 3
+              },
+              "showInDsl": false,
+              "name": "Connection",
+              "description": "",
+              "modelProperties": {}
+            }
+          ],
+          "name": "withJsonBodyParameterWithMultiLevelField",
+          "description": "",
+          "modelProperties": {},
+          "kind": "operation"
+        }
+      ],
+      "connectionProviders": [
+        {
+          "connectionManagementType": "NONE",
+          "externalLibraryModels": [],
+          "supportsConnectivityTesting": true,
+          "semanticTerms": [],
+          "stereotype": {
+            "type": "CHAT",
+            "namespace": "VALUES",
+            "parent": {
+              "type": "CONNECTION",
+              "namespace": "MULE"
+            }
+          },
+          "parameterGroupModels": [
+            {
+              "parameters": [
+                {
+                  "type": {
+                    "format": "java",
+                    "type": "Object",
+                    "annotations": {
+                      "typeId": "Reconnection"
+                    },
+                    "fields": [
+                      {
+                        "key": {
+                          "name": "failsDeployment"
+                        },
+                        "model": {
+                          "type": "Boolean",
+                          "annotations": {
+                            "default": "false"
+                          }
+                        },
+                        "annotations": {
+                          "description": {
+                            "value": "When the application is deployed, a connectivity test is performed on all connectors. If set to true, deployment will fail if the test doesn\u0027t pass after exhausting the associated reconnection strategy"
+                          }
+                        }
+                      },
+                      {
+                        "key": {
+                          "name": "reconnectionStrategy"
+                        },
+                        "model": {
+                          "type": "Union",
+                          "annotations": {
+                            "typeId": "ReconnectionStrategy"
+                          },
+                          "of": [
+                            {
+                              "type": "Object",
+                              "annotations": {
+                                "typeId": "reconnect"
+                              },
+                              "fields": [
+                                {
+                                  "key": {
+                                    "name": "frequency"
+                                  },
+                                  "model": {
+                                    "type": "Number",
+                                    "annotations": {
+                                      "int": {},
+                                      "classInformation": {
+                                        "classname": "java.lang.Long",
+                                        "hasDefaultConstructor": false,
+                                        "isInterface": false,
+                                        "isInstantiable": false,
+                                        "isAbstract": false,
+                                        "isFinal": true,
+                                        "implementedInterfaces": [
+                                          "java.lang.Comparable"
+                                        ],
+                                        "parent": "java.lang.Number",
+                                        "genericTypes": [],
+                                        "isMap": false
+                                      },
+                                      "default": "2000"
+                                    }
+                                  },
+                                  "annotations": {
+                                    "description": {
+                                      "value": "How often (in ms) to reconnect"
+                                    }
+                                  }
+                                },
+                                {
+                                  "key": {
+                                    "name": "blocking"
+                                  },
+                                  "model": {
+                                    "type": "Boolean",
+                                    "annotations": {
+                                      "default": "true"
+                                    }
+                                  },
+                                  "annotations": {
+                                    "description": {
+                                      "value": "If false, the reconnection strategy will run in a separate, non-blocking thread"
+                                    }
+                                  }
+                                },
+                                {
+                                  "key": {
+                                    "name": "count"
+                                  },
+                                  "model": {
+                                    "type": "Number",
+                                    "annotations": {
+                                      "int": {},
+                                      "default": "2"
+                                    }
+                                  },
+                                  "annotations": {
+                                    "description": {
+                                      "value": "How many reconnection attempts to make"
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "Object",
+                              "annotations": {
+                                "typeId": "reconnect-forever"
+                              },
+                              "fields": [
+                                {
+                                  "key": {
+                                    "name": "frequency"
+                                  },
+                                  "model": {
+                                    "type": "Number",
+                                    "annotations": {
+                                      "int": {},
+                                      "classInformation": {
+                                        "classname": "java.lang.Long",
+                                        "hasDefaultConstructor": false,
+                                        "isInterface": false,
+                                        "isInstantiable": false,
+                                        "isAbstract": false,
+                                        "isFinal": true,
+                                        "implementedInterfaces": [
+                                          "java.lang.Comparable"
+                                        ],
+                                        "parent": "java.lang.Number",
+                                        "genericTypes": [],
+                                        "isMap": false
+                                      },
+                                      "default": "2000"
+                                    }
+                                  },
+                                  "annotations": {
+                                    "description": {
+                                      "value": "How often (in ms) to reconnect"
+                                    }
+                                  }
+                                },
+                                {
+                                  "key": {
+                                    "name": "blocking"
+                                  },
+                                  "model": {
+                                    "type": "Boolean",
+                                    "annotations": {
+                                      "default": "true"
+                                    }
+                                  },
+                                  "annotations": {
+                                    "description": {
+                                      "value": "If false, the reconnection strategy will run in a separate, non-blocking thread"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "annotations": {
+                          "description": {
+                            "value": "The reconnection strategy to use"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "hasDynamicType": false,
+                  "required": false,
+                  "isConfigOverride": false,
+                  "isComponentId": false,
+                  "fieldValueProviderModels": [],
+                  "expressionSupport": "NOT_SUPPORTED",
+                  "role": "BEHAVIOUR",
+                  "dslConfiguration": {
+                    "allowsInlineDefinition": true,
+                    "allowsReferences": false,
+                    "allowTopLevelDefinition": false
+                  },
+                  "layoutModel": {
+                    "password": false,
+                    "text": false,
+                    "query": false,
+                    "order": 1,
+                    "tabName": "Advanced"
+                  },
+                  "allowedStereotypeModels": [],
+                  "semanticTerms": [],
+                  "name": "reconnection",
+                  "description": "When the application is deployed, a connectivity test is performed on all connectors. If set to true, deployment will fail if the test doesn\u0027t pass after exhausting the associated reconnection strategy",
+                  "modelProperties": {
+                    "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                      "value": {
+                        "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                        "localPart": "reconnection",
+                        "prefix": "mule"
+                      }
+                    },
+                    "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                      "sequence": 3
+                    }
+                  }
+                }
+              ],
+              "exclusiveParametersModels": [],
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "showInDsl": false,
+              "name": "Connection",
+              "description": "",
+              "modelProperties": {}
+            }
+          ],
+          "name": "chat",
+          "description": "",
+          "modelProperties": {}
+        }
+      ],
+      "messageSources": [],
+      "name": "chat",
+      "description": "",
+      "modelProperties": {
+        "requiredForMetadata": {
+          "requiredParameters": [
+            "name"
+          ]
+        }
+      }
+    },
+    {
+      "stereotype": {
         "type": "CONFIG",
         "namespace": "VALUES",
         "parent": {
@@ -2213,7 +3562,12 @@
                     "providerId": "WithConfigValueProvider-id",
                     "requiresConfiguration": true,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -2687,7 +4041,12 @@
                     "providerId": "Value provider with connection",
                     "requiresConfiguration": false,
                     "requiresConnection": true,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -3144,7 +4503,8 @@
                     "providerId": "org.mule.test.values.extension.resolver.WithRequiredParametersFromConfigLegacyValueProvider",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {}
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -3510,7 +4870,12 @@
                     "providerId": "WithRequiredParameterFromGroupValueProvider-id",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -3563,7 +4928,12 @@
                     "providerId": "Simple value provider",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -3900,7 +5270,8 @@
                     "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterFromGroupLegacyValueProvider",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {}
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -3953,7 +5324,12 @@
                     "providerId": "Simple value provider",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -4581,7 +5957,12 @@
                     "providerId": "WithErrorValueProvider-id",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -4913,7 +6294,8 @@
                       "providerId": "Simple value provider",
                       "requiresConfiguration": false,
                       "requiresConnection": false,
-                      "isOpen": true
+                      "isOpen": true,
+                      "modelProperties": {}
                     }
                   ],
                   "expressionSupport": "SUPPORTED",
@@ -5213,7 +6595,12 @@
                     "providerId": "Simple value provider",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -5534,7 +6921,12 @@
                     "providerId": "org.mule.test.values.extension.resolver.WithFourActingParametersValueProvider",
                     "requiresConfiguration": false,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "SUPPORTED",
@@ -5989,7 +7381,12 @@
                     "providerId": "WithConfigValueProvider-id",
                     "requiresConfiguration": true,
                     "requiresConnection": false,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "NOT_SUPPORTED",
@@ -6332,7 +7729,12 @@
                     "providerId": "Value provider with connection",
                     "requiresConfiguration": false,
                     "requiresConnection": true,
-                    "isOpen": true
+                    "isOpen": true,
+                    "modelProperties": {
+                      "sinceMuleVersion": {
+                        "version": "4.4.0"
+                      }
+                    }
                   },
                   "fieldValueProviderModels": [],
                   "expressionSupport": "NOT_SUPPORTED",
@@ -6841,7 +8243,8 @@
                   "providerId": "Simple value provider",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 }
               ],
               "expressionSupport": "SUPPORTED",
@@ -7371,7 +8774,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.SimpleLegacyValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -7907,7 +9311,12 @@
                 "providerId": "WithErrorValueProvider-id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -8181,7 +9590,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -8420,9 +9834,333 @@
           ]
         }
       }
+    },
+    {
+      "stereotype": {
+        "type": "XML",
+        "namespace": "VALUES",
+        "parent": {
+          "type": "MODULE_CONFIG",
+          "namespace": "MULE"
+        }
+      },
+      "parameterGroupModels": [
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "java",
+                "type": "String"
+              },
+              "hasDynamicType": false,
+              "required": true,
+              "isConfigOverride": false,
+              "isComponentId": true,
+              "fieldValueProviderModels": [],
+              "expressionSupport": "NOT_SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "name",
+              "description": "The identifier of this element used to reference it in other components",
+              "modelProperties": {}
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 1
+          },
+          "showInDsl": false,
+          "name": "General",
+          "description": "",
+          "modelProperties": {}
+        }
+      ],
+      "externalLibraryModels": [],
+      "operations": [],
+      "connectionProviders": [],
+      "messageSources": [],
+      "name": "xml",
+      "description": "",
+      "modelProperties": {
+        "requiredForMetadata": {
+          "requiredParameters": [
+            "name"
+          ]
+        }
+      }
     }
   ],
   "operations": [
+    {
+      "blocking": true,
+      "executionType": "CPU_LITE",
+      "output": {
+        "type": {
+          "format": "java",
+          "type": "Void"
+        },
+        "hasDynamicType": false,
+        "description": "",
+        "modelProperties": {}
+      },
+      "outputAttributes": {
+        "type": {
+          "format": "java",
+          "type": "Void"
+        },
+        "hasDynamicType": false,
+        "description": "",
+        "modelProperties": {}
+      },
+      "transactional": false,
+      "requiresConnection": false,
+      "supportsStreaming": false,
+      "notifications": [],
+      "nestedComponents": [],
+      "errors": [],
+      "semanticTerms": [],
+      "stereotype": {
+        "type": "ATTRIBUTE_AS_ACTING_FOR_TAG_CONTENT_VALUE",
+        "namespace": "VALUES",
+        "parent": {
+          "type": "PROCESSOR",
+          "namespace": "VALUES",
+          "parent": {
+            "type": "PROCESSOR",
+            "namespace": "MULE"
+          }
+        }
+      },
+      "parameterGroupModels": [
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "xml",
+                "type": "Any",
+                "annotations": {
+                  "classInformation": {
+                    "classname": "java.io.InputStream",
+                    "hasDefaultConstructor": true,
+                    "isInterface": false,
+                    "isInstantiable": false,
+                    "isAbstract": true,
+                    "isFinal": false,
+                    "implementedInterfaces": [
+                      "java.io.Closeable"
+                    ],
+                    "parent": "",
+                    "genericTypes": [],
+                    "isMap": false
+                  }
+                }
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "fieldValueProviderModels": [
+                {
+                  "targetSelector": "nested.tag",
+                  "parameters": [
+                    {
+                      "name": "requiredValue",
+                      "required": true,
+                      "extractionExpression": "xmlBody.nested.anotherTag.@customAttribute"
+                    }
+                  ],
+                  "partOrder": 1,
+                  "providerName": "xmlBody",
+                  "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
+                  "requiresConfiguration": false,
+                  "requiresConnection": false,
+                  "isOpen": true,
+                  "modelProperties": {}
+                }
+              ],
+              "expressionSupport": "SUPPORTED",
+              "defaultValue": "#[payload]",
+              "role": "PRIMARY_CONTENT",
+              "dslConfiguration": {
+                "allowsInlineDefinition": true,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "xmlBody",
+              "description": "",
+              "modelProperties": {}
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 1
+          },
+          "showInDsl": false,
+          "name": "General",
+          "description": "",
+          "modelProperties": {}
+        },
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "java",
+                "type": "Array",
+                "annotations": {
+                  "description": {
+                    "value": "Determines that an error thrown by this operation should be mapped to another"
+                  },
+                  "typeDsl": {
+                    "allowInlineDefinition": true,
+                    "allowTopLevelDefinition": false
+                  }
+                },
+                "item": {
+                  "type": "Object",
+                  "annotations": {
+                    "typeId": "errorMapping"
+                  },
+                  "fields": [
+                    {
+                      "key": {
+                        "name": "source"
+                      },
+                      "model": {
+                        "format": {
+                          "id": "text",
+                          "label": "Text",
+                          "validMimeTypes": [
+                            "text/plain"
+                          ]
+                        },
+                        "type": "String",
+                        "annotations": {
+                          "typeId": "errorTypeMatcher",
+                          "enum": {
+                            "type": "[Ljava.lang.String;",
+                            "values": [
+                              "ANY",
+                              "REDELIVERY_EXHAUSTED",
+                              "TRANSFORMATION",
+                              "EXPRESSION",
+                              "SECURITY",
+                              "CLIENT_SECURITY",
+                              "SERVER_SECURITY",
+                              "ROUTING",
+                              "CONNECTIVITY",
+                              "RETRY_EXHAUSTED",
+                              "TIMEOUT"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "name": "target",
+                        "required": "true"
+                      },
+                      "model": {
+                        "format": {
+                          "id": "text",
+                          "label": "Text",
+                          "validMimeTypes": [
+                            "text/plain"
+                          ]
+                        },
+                        "type": "String",
+                        "annotations": {
+                          "typeId": "errorTypeDefinition"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "fieldValueProviderModels": [],
+              "expressionSupport": "NOT_SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 2,
+                "tabName": "Error Mapping"
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "errorMappings",
+              "description": "Set of error mappings",
+              "modelProperties": {
+                "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                  "value": {
+                    "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                    "localPart": "error-mapping",
+                    "prefix": "mule"
+                  }
+                },
+                "sinceMuleVersion": {
+                  "version": "4.4.0"
+                },
+                "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                  "sequence": 12
+                }
+              }
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 2
+          },
+          "showInDsl": false,
+          "name": "Error Mappings",
+          "description": "",
+          "modelProperties": {}
+        }
+      ],
+      "name": "attributeAsActingForTagContentValue",
+      "description": "",
+      "modelProperties": {},
+      "kind": "operation"
+    },
     {
       "blocking": true,
       "executionType": "CPU_LITE",
@@ -8512,7 +10250,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.MultiLevelValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -8551,7 +10290,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.MultiLevelValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -8590,7 +10330,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.MultiLevelValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -8841,7 +10582,8 @@
                   "providerId": "Simple value provider",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "location.continent",
@@ -8851,7 +10593,8 @@
                   "providerId": "SdkMultiLevelValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "location.country",
@@ -8861,7 +10604,8 @@
                   "providerId": "SdkMultiLevelValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "location.city",
@@ -8871,7 +10615,8 @@
                   "providerId": "SdkMultiLevelValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 }
               ],
               "expressionSupport": "SUPPORTED",
@@ -9101,7 +10846,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithMuleContextValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -9330,7 +11076,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -9559,7 +11310,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -9823,7 +11579,12 @@
                 "providerId": "WithRequiredParameterFromGroupValueProvider-id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -9876,7 +11637,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -10152,7 +11918,8 @@
                   "providerId": "Simple value provider",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "another.simple.path",
@@ -10162,7 +11929,8 @@
                   "providerId": "TrueFalseValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 }
               ],
               "expressionSupport": "SUPPORTED",
@@ -10410,7 +12178,8 @@
                   "providerId": "Simple value provider",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 }
               ],
               "expressionSupport": "SUPPORTED",
@@ -10661,7 +12430,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -11081,7 +12851,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterWithAliasValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -11280,6 +13051,516 @@
       "errors": [],
       "semanticTerms": [],
       "stereotype": {
+        "type": "TAG_CONTENT_AS_ACTING_FOR_ATTRIBUTE_VALUE",
+        "namespace": "VALUES",
+        "parent": {
+          "type": "PROCESSOR",
+          "namespace": "VALUES",
+          "parent": {
+            "type": "PROCESSOR",
+            "namespace": "MULE"
+          }
+        }
+      },
+      "parameterGroupModels": [
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "xml",
+                "type": "Any",
+                "annotations": {
+                  "classInformation": {
+                    "classname": "java.io.InputStream",
+                    "hasDefaultConstructor": true,
+                    "isInterface": false,
+                    "isInstantiable": false,
+                    "isAbstract": true,
+                    "isFinal": false,
+                    "implementedInterfaces": [
+                      "java.io.Closeable"
+                    ],
+                    "parent": "",
+                    "genericTypes": [],
+                    "isMap": false
+                  }
+                }
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "fieldValueProviderModels": [
+                {
+                  "targetSelector": "nested.tag.@customAttribute",
+                  "parameters": [
+                    {
+                      "name": "requiredValue",
+                      "required": true,
+                      "extractionExpression": "xmlBody.nested.someTag"
+                    }
+                  ],
+                  "partOrder": 1,
+                  "providerName": "xmlBody",
+                  "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
+                  "requiresConfiguration": false,
+                  "requiresConnection": false,
+                  "isOpen": true,
+                  "modelProperties": {}
+                }
+              ],
+              "expressionSupport": "SUPPORTED",
+              "defaultValue": "#[payload]",
+              "role": "PRIMARY_CONTENT",
+              "dslConfiguration": {
+                "allowsInlineDefinition": true,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "xmlBody",
+              "description": "",
+              "modelProperties": {}
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 1
+          },
+          "showInDsl": false,
+          "name": "General",
+          "description": "",
+          "modelProperties": {}
+        },
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "java",
+                "type": "Array",
+                "annotations": {
+                  "description": {
+                    "value": "Determines that an error thrown by this operation should be mapped to another"
+                  },
+                  "typeDsl": {
+                    "allowInlineDefinition": true,
+                    "allowTopLevelDefinition": false
+                  }
+                },
+                "item": {
+                  "type": "Object",
+                  "annotations": {
+                    "typeId": "errorMapping"
+                  },
+                  "fields": [
+                    {
+                      "key": {
+                        "name": "source"
+                      },
+                      "model": {
+                        "format": {
+                          "id": "text",
+                          "label": "Text",
+                          "validMimeTypes": [
+                            "text/plain"
+                          ]
+                        },
+                        "type": "String",
+                        "annotations": {
+                          "typeId": "errorTypeMatcher",
+                          "enum": {
+                            "type": "[Ljava.lang.String;",
+                            "values": [
+                              "ANY",
+                              "REDELIVERY_EXHAUSTED",
+                              "TRANSFORMATION",
+                              "EXPRESSION",
+                              "SECURITY",
+                              "CLIENT_SECURITY",
+                              "SERVER_SECURITY",
+                              "ROUTING",
+                              "CONNECTIVITY",
+                              "RETRY_EXHAUSTED",
+                              "TIMEOUT"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "name": "target",
+                        "required": "true"
+                      },
+                      "model": {
+                        "format": {
+                          "id": "text",
+                          "label": "Text",
+                          "validMimeTypes": [
+                            "text/plain"
+                          ]
+                        },
+                        "type": "String",
+                        "annotations": {
+                          "typeId": "errorTypeDefinition"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "fieldValueProviderModels": [],
+              "expressionSupport": "NOT_SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 2,
+                "tabName": "Error Mapping"
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "errorMappings",
+              "description": "Set of error mappings",
+              "modelProperties": {
+                "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                  "value": {
+                    "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                    "localPart": "error-mapping",
+                    "prefix": "mule"
+                  }
+                },
+                "sinceMuleVersion": {
+                  "version": "4.4.0"
+                },
+                "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                  "sequence": 12
+                }
+              }
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 2
+          },
+          "showInDsl": false,
+          "name": "Error Mappings",
+          "description": "",
+          "modelProperties": {}
+        }
+      ],
+      "name": "tagContentAsActingForAttributeValue",
+      "description": "",
+      "modelProperties": {},
+      "kind": "operation"
+    },
+    {
+      "blocking": true,
+      "executionType": "CPU_LITE",
+      "output": {
+        "type": {
+          "format": "java",
+          "type": "Void"
+        },
+        "hasDynamicType": false,
+        "description": "",
+        "modelProperties": {}
+      },
+      "outputAttributes": {
+        "type": {
+          "format": "java",
+          "type": "Void"
+        },
+        "hasDynamicType": false,
+        "description": "",
+        "modelProperties": {}
+      },
+      "transactional": false,
+      "requiresConnection": false,
+      "supportsStreaming": false,
+      "notifications": [],
+      "nestedComponents": [],
+      "errors": [],
+      "semanticTerms": [],
+      "stereotype": {
+        "type": "TEXT_AS_ACTING_FOR_ATTRIBUTE_VALUE",
+        "namespace": "VALUES",
+        "parent": {
+          "type": "PROCESSOR",
+          "namespace": "VALUES",
+          "parent": {
+            "type": "PROCESSOR",
+            "namespace": "MULE"
+          }
+        }
+      },
+      "parameterGroupModels": [
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "xml",
+                "type": "Any",
+                "annotations": {
+                  "classInformation": {
+                    "classname": "java.io.InputStream",
+                    "hasDefaultConstructor": true,
+                    "isInterface": false,
+                    "isInstantiable": false,
+                    "isAbstract": true,
+                    "isFinal": false,
+                    "implementedInterfaces": [
+                      "java.io.Closeable"
+                    ],
+                    "parent": "",
+                    "genericTypes": [],
+                    "isMap": false
+                  }
+                }
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "fieldValueProviderModels": [
+                {
+                  "targetSelector": "nested.tag.@customAttribute",
+                  "parameters": [
+                    {
+                      "name": "requiredValue",
+                      "required": true,
+                      "extractionExpression": "xmlBody.nested.tag.\"__text\""
+                    }
+                  ],
+                  "partOrder": 1,
+                  "providerName": "xmlBody",
+                  "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
+                  "requiresConfiguration": false,
+                  "requiresConnection": false,
+                  "isOpen": true,
+                  "modelProperties": {}
+                }
+              ],
+              "expressionSupport": "SUPPORTED",
+              "defaultValue": "#[payload]",
+              "role": "PRIMARY_CONTENT",
+              "dslConfiguration": {
+                "allowsInlineDefinition": true,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 1
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "xmlBody",
+              "description": "",
+              "modelProperties": {}
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 1
+          },
+          "showInDsl": false,
+          "name": "General",
+          "description": "",
+          "modelProperties": {}
+        },
+        {
+          "parameters": [
+            {
+              "type": {
+                "format": "java",
+                "type": "Array",
+                "annotations": {
+                  "description": {
+                    "value": "Determines that an error thrown by this operation should be mapped to another"
+                  },
+                  "typeDsl": {
+                    "allowInlineDefinition": true,
+                    "allowTopLevelDefinition": false
+                  }
+                },
+                "item": {
+                  "type": "Object",
+                  "annotations": {
+                    "typeId": "errorMapping"
+                  },
+                  "fields": [
+                    {
+                      "key": {
+                        "name": "source"
+                      },
+                      "model": {
+                        "format": {
+                          "id": "text",
+                          "label": "Text",
+                          "validMimeTypes": [
+                            "text/plain"
+                          ]
+                        },
+                        "type": "String",
+                        "annotations": {
+                          "typeId": "errorTypeMatcher",
+                          "enum": {
+                            "type": "[Ljava.lang.String;",
+                            "values": [
+                              "ANY",
+                              "REDELIVERY_EXHAUSTED",
+                              "TRANSFORMATION",
+                              "EXPRESSION",
+                              "SECURITY",
+                              "CLIENT_SECURITY",
+                              "SERVER_SECURITY",
+                              "ROUTING",
+                              "CONNECTIVITY",
+                              "RETRY_EXHAUSTED",
+                              "TIMEOUT"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "name": "target",
+                        "required": "true"
+                      },
+                      "model": {
+                        "format": {
+                          "id": "text",
+                          "label": "Text",
+                          "validMimeTypes": [
+                            "text/plain"
+                          ]
+                        },
+                        "type": "String",
+                        "annotations": {
+                          "typeId": "errorTypeDefinition"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "hasDynamicType": false,
+              "required": false,
+              "isConfigOverride": false,
+              "isComponentId": false,
+              "fieldValueProviderModels": [],
+              "expressionSupport": "NOT_SUPPORTED",
+              "role": "BEHAVIOUR",
+              "dslConfiguration": {
+                "allowsInlineDefinition": false,
+                "allowsReferences": false,
+                "allowTopLevelDefinition": false
+              },
+              "layoutModel": {
+                "password": false,
+                "text": false,
+                "query": false,
+                "order": 2,
+                "tabName": "Error Mapping"
+              },
+              "allowedStereotypeModels": [],
+              "semanticTerms": [],
+              "name": "errorMappings",
+              "description": "Set of error mappings",
+              "modelProperties": {
+                "org.mule.runtime.extension.api.property.QNameModelProperty": {
+                  "value": {
+                    "namespaceURI": "http://www.mulesoft.org/schema/mule/core",
+                    "localPart": "error-mapping",
+                    "prefix": "mule"
+                  }
+                },
+                "sinceMuleVersion": {
+                  "version": "4.4.0"
+                },
+                "org.mule.runtime.extension.api.property.InfrastructureParameterModelProperty": {
+                  "sequence": 12
+                }
+              }
+            }
+          ],
+          "exclusiveParametersModels": [],
+          "layoutModel": {
+            "password": false,
+            "text": false,
+            "query": false,
+            "order": 2
+          },
+          "showInDsl": false,
+          "name": "Error Mappings",
+          "description": "",
+          "modelProperties": {}
+        }
+      ],
+      "name": "textAsActingForAttributeValue",
+      "description": "",
+      "modelProperties": {},
+      "kind": "operation"
+    },
+    {
+      "blocking": true,
+      "executionType": "CPU_LITE",
+      "output": {
+        "type": {
+          "format": "java",
+          "type": "Void"
+        },
+        "hasDynamicType": false,
+        "description": "",
+        "modelProperties": {}
+      },
+      "outputAttributes": {
+        "type": {
+          "format": "java",
+          "type": "Void"
+        },
+        "hasDynamicType": false,
+        "description": "",
+        "modelProperties": {}
+      },
+      "transactional": false,
+      "requiresConnection": false,
+      "supportsStreaming": false,
+      "notifications": [],
+      "nestedComponents": [],
+      "errors": [],
+      "semanticTerms": [],
+      "stereotype": {
         "type": "VALUES_INSIDE_SHOW_IN_DSL_GROUP",
         "namespace": "VALUES",
         "parent": {
@@ -11316,7 +13597,12 @@
                 "providerId": "WithRequiredParameterFromGroupValueProvider-id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -11369,7 +13655,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -11633,7 +13924,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -11897,7 +14193,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithListParameterValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -12177,7 +14478,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithEnumParameterValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -12457,7 +14763,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -12737,7 +15048,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -13017,7 +15333,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -13298,7 +15619,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -13579,7 +15905,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -13859,7 +16190,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -14139,7 +16475,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -14403,7 +16744,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithOptionalParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -14667,7 +17013,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithOptionalParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -14947,7 +17298,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithComplexActingParameter",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -15211,7 +17563,12 @@
                 "providerId": "WithErrorValueProvider-id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -15490,7 +17847,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithFourActingParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -15770,7 +18132,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithMapParameterValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -16050,7 +18417,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithOptionalParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -16314,7 +18682,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithOptionalParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -16578,7 +18947,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithOptionalParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -16843,7 +19213,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithPojoParameterValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -17123,7 +19498,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterSdkValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -17392,7 +19772,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredAndOptionalParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -17690,7 +20071,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredAndOptionalParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -17984,7 +20366,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -18253,7 +20636,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredAndOptionalParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -18551,7 +20935,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithTwoActingParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -18865,7 +21254,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithTwoActingParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -19174,7 +21568,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithOptionalParametersWithDefaultValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "SUPPORTED",
@@ -19444,7 +21839,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -19735,7 +22135,8 @@
                   "providerId": "Simple value provider",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 }
               ],
               "expressionSupport": "NOT_SUPPORTED",
@@ -20024,7 +22425,12 @@
                 "providerId": "TrueFalseValueProvider-id",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -20315,7 +22721,8 @@
                   "providerId": "Simple value provider",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "location.continent",
@@ -20325,7 +22732,8 @@
                   "providerId": "SdkMultiLevelValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "location.country",
@@ -20335,7 +22743,8 @@
                   "providerId": "SdkMultiLevelValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 },
                 {
                   "targetSelector": "location.city",
@@ -20345,7 +22754,8 @@
                   "providerId": "SdkMultiLevelValueProvider-id",
                   "requiresConfiguration": false,
                   "requiresConnection": false,
-                  "isOpen": true
+                  "isOpen": true,
+                  "modelProperties": {}
                 }
               ],
               "expressionSupport": "NOT_SUPPORTED",
@@ -20862,7 +23272,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.MultiLevelValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -20901,7 +23312,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.MultiLevelValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -20940,7 +23352,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.MultiLevelValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -21056,7 +23469,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterFromGroupLegacyValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -21292,7 +23706,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -21660,7 +24079,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParameterWithAliasValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -21777,7 +24197,12 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithTwoActingParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -22322,7 +24747,12 @@
                 "providerId": "Simple value provider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {
+                  "sinceMuleVersion": {
+                    "version": "4.4.0"
+                  }
+                }
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",
@@ -22478,7 +24908,8 @@
                 "providerId": "org.mule.test.values.extension.resolver.WithRequiredParametersValueProvider",
                 "requiresConfiguration": false,
                 "requiresConnection": false,
-                "isOpen": true
+                "isOpen": true,
+                "modelProperties": {}
               },
               "fieldValueProviderModels": [],
               "expressionSupport": "NOT_SUPPORTED",

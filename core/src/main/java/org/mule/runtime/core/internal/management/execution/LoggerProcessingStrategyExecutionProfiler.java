@@ -68,30 +68,38 @@ public class LoggerProcessingStrategyExecutionProfiler implements ProcessingStra
 
   @Override
   public void profileBeforeDispatchingToProcessor(CoreEvent e) {
-    startTime.set(nanoTime());
-    log(LOG_BEFORE_DISPATCHING_TO_PROCESSOR_TEMPLATE, e.getCorrelationId(), processingType.toString(), locationToLog,
-        Long.toString(nanoTime()));
+    if (LOGGER.isDebugEnabled()) {
+      startTime.set(nanoTime());
+      log(LOG_BEFORE_DISPATCHING_TO_PROCESSOR_TEMPLATE, e.getCorrelationId(), processingType.toString(), locationToLog,
+          Long.toString(nanoTime()));
+    }
   }
 
   @Override
   public void profileBeforeComponentProcessing(CoreEvent e) {
-    dispatchTime.set(nanoTime());
-    log(LOG_BEFORE_COMPONENT_PROCESSING_TEMPLATE, e.getCorrelationId(), processingType.toString(), locationToLog,
-        Long.toString(dispatchTime.get() - startTime.get()));
+    if (LOGGER.isDebugEnabled()) {
+      dispatchTime.set(nanoTime());
+      log(LOG_BEFORE_COMPONENT_PROCESSING_TEMPLATE, e.getCorrelationId(), processingType.toString(), locationToLog,
+          Long.toString(dispatchTime.get() - startTime.get()));
+    }
   }
 
   @Override
   public void profileAfterResponseReceived(CoreEvent e) {
-    responseTime.set(nanoTime());
-    log(LOG_AFTER_RESPONSE_RECEIVED, e.getCorrelationId(), processingType.toString(), locationToLog,
-        Long.toString(responseTime.get() - dispatchTime.get()));
+    if (LOGGER.isDebugEnabled()) {
+      responseTime.set(nanoTime());
+      log(LOG_AFTER_RESPONSE_RECEIVED, e.getCorrelationId(), processingType.toString(), locationToLog,
+          Long.toString(responseTime.get() - dispatchTime.get()));
+    }
   }
 
   @Override
   public void profileAfterDispatchingToFlow(CoreEvent e) {
-    log(LOG_AFTER_DISPATCHING_TO_FLOW,
-        e.getCorrelationId(), locationToLog, Long.toString(responseTime.get() - nanoTime()),
-        Long.toString(nanoTime() - startTime.get()));
+    if (LOGGER.isDebugEnabled()) {
+      log(LOG_AFTER_DISPATCHING_TO_FLOW,
+          e.getCorrelationId(), locationToLog, Long.toString(responseTime.get() - nanoTime()),
+          Long.toString(nanoTime() - startTime.get()));
+    }
   }
 
   protected void log(String template, String... parameters) {

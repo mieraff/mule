@@ -77,33 +77,39 @@ public class ComponentProcessingStrategyTransformerBuilder {
   }
 
   private Mono<CoreEvent> doBuildFromMono(CoreEvent event) {
-    Mono<CoreEvent> mono = Mono.just(event);
+    Mono<CoreEvent> mono =
+        Mono.just(event).doOnNext(e -> processingStrategyExecutionProfiler.profileBeforeDispatchingToProcessor(e));
     if (!executionOrchestrator.getDispatcherScheduler().equals(ImmediateScheduler.IMMEDIATE_SCHEDULER)) {
       mono = mono.publishOn(fromExecutorService(executionOrchestrator.getDispatcherScheduler()));
     }
-
-    mono = mono.transform(processor);
+    mono = mono.doOnNext(e -> processingStrategyExecutionProfiler.profileBeforeComponentProcessing(e)).transform(processor)
+        .doOnNext(e -> processingStrategyExecutionProfiler.profileAfterResponseReceived(e));
 
     if (!executionOrchestrator.getCallbackScheduler().equals(ImmediateScheduler.IMMEDIATE_SCHEDULER)) {
-      mono = mono.publishOn(fromExecutorService(executionOrchestrator.getCallbackScheduler()));
+      mono = mono.publishOn(fromExecutorService(executionOrchestrator.getCallbackScheduler()))
+          .doOnNext(e -> processingStrategyExecutionProfiler.profileAfterDispatchingToFlow(e));
     }
 
+    // TODO verify if this can not be shared through the reactor chain context
     return mono.subscriberContext(ctx -> ctx.put(PROCESSOR_SCHEDULER_CONTEXT_KEY, executionOrchestrator.getContextScheduler()));
   }
 
 
   private Flux<CoreEvent> doBuildFromFlux(Publisher<CoreEvent> publisher) {
-    Flux<CoreEvent> flux = Flux.from(publisher);
+    Flux<CoreEvent> flux =
+        Flux.from(publisher).doOnNext(e -> processingStrategyExecutionProfiler.profileBeforeDispatchingToProcessor(e));
     if (!executionOrchestrator.getDispatcherScheduler().equals(ImmediateScheduler.IMMEDIATE_SCHEDULER)) {
       flux = flux.publishOn(fromExecutorService(executionOrchestrator.getDispatcherScheduler()));
     }
-
-    flux = flux.transform(processor);
+    flux = flux.doOnNext(e -> processingStrategyExecutionProfiler.profileBeforeComponentProcessing(e)).transform(processor)
+        .doOnNext(e -> processingStrategyExecutionProfiler.profileAfterResponseReceived(e));
 
     if (!executionOrchestrator.getCallbackScheduler().equals(ImmediateScheduler.IMMEDIATE_SCHEDULER)) {
-      flux = flux.publishOn(fromExecutorService(executionOrchestrator.getCallbackScheduler()));
+      flux = flux.publishOn(fromExecutorService(executionOrchestrator.getCallbackScheduler()))
+          .doOnNext(e -> processingStrategyExecutionProfiler.profileAfterDispatchingToFlow(e));
     }
 
+    // TODO verify if this can not be shared through the reactor chain context
     return flux.subscriberContext(ctx -> ctx.put(PROCESSOR_SCHEDULER_CONTEXT_KEY, executionOrchestrator.getContextScheduler()));
   }
 

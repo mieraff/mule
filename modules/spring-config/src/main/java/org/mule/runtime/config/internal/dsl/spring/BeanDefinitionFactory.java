@@ -180,7 +180,7 @@ public class BeanDefinitionFactory {
   }
 
   protected void resolveParamBeanDefinition(Map<ComponentAst, SpringComponentModel> springComponentModels,
-                                            List<ComponentAst> componentModelHierarchy, ComponentAst componentModel,
+                                            List<ComponentAst> componentModelHierarchy, ComponentAst paramOwnerComponentModel,
                                             BeanDefinitionRegistry registry, SpringConfigurationComponentLocator componentLocator,
                                             List<SpringComponentModel> paramsModels, ComponentParameterAst param) {
     param.getModel().getType().accept(new MetadataTypeVisitor() {
@@ -194,7 +194,7 @@ public class BeanDefinitionFactory {
       public void visitSimpleType(SimpleType simpleType) {
         if (isContent(param.getModel()) || isText(param.getModel())) {
           final List<ComponentAst> updatedHierarchy = new ArrayList<>(componentModelHierarchy);
-          updatedHierarchy.add(componentModel);
+          updatedHierarchy.add(paramOwnerComponentModel);
           resolveComponentBeanDefinitionParam(springComponentModels, updatedHierarchy, emptySet(), param,
                                               nestedComp -> resolveComponent(springComponentModels, componentModelHierarchy,
                                                                              nestedComp, registry, componentLocator),
@@ -212,7 +212,7 @@ public class BeanDefinitionFactory {
       @Override
       public void visitArrayType(ArrayType arrayType) {
         final List<ComponentAst> updatedHierarchy = new ArrayList<>(componentModelHierarchy);
-        updatedHierarchy.add(componentModel);
+        updatedHierarchy.add(paramOwnerComponentModel);
 
         List<ComponentAst> values = (List<ComponentAst>) param.getValue().getRight();
         if (values != null) {
@@ -248,7 +248,7 @@ public class BeanDefinitionFactory {
       @Override
       public void visitObject(ObjectType objectType) {
         final List<ComponentAst> updatedHierarchy = new ArrayList<>(componentModelHierarchy);
-        updatedHierarchy.add(componentModel);
+        updatedHierarchy.add(paramOwnerComponentModel);
 
         if (isMap(objectType)) {
           List<ComponentAst> entries = (List<ComponentAst>) param.getValue().getRight();
@@ -290,7 +290,7 @@ public class BeanDefinitionFactory {
                                          springComponentModel -> {
                                            paramsModels.add(springComponentModel);
                                            handleSpringComponentModel(springComponentModel,
-                                                                      componentModel,
+                                                                      paramOwnerComponentModel,
                                                                       springComponentModels,
                                                                       registry,
                                                                       componentLocator);
